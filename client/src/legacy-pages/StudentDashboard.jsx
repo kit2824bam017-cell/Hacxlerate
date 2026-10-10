@@ -241,8 +241,8 @@ function StudentDashboard() {
   const audioChunksRef = useRef([])
   const ttsRateRef = useRef(1)
   const ttsVoicesRef = useRef({ male: null, female: null })
-  const elevenLabsAudioRef = useRef(null)
-  const elevenLabsObjectUrlRef = useRef(null)
+  const ttsAudioRef = useRef(null)
+  const ttsObjectUrlRef = useRef(null)
   const lastHomeworkImageRef = useRef(null)
 
   useEffect(() => {
@@ -387,13 +387,13 @@ function StudentDashboard() {
   const [chatLoading, setChatLoading] = useState(false)
 
   const stopTtsPlayback = () => {
-    if (elevenLabsAudioRef.current) {
-      elevenLabsAudioRef.current.pause()
-      elevenLabsAudioRef.current = null
+    if (ttsAudioRef.current) {
+      ttsAudioRef.current.pause()
+      ttsAudioRef.current = null
     }
-    if (elevenLabsObjectUrlRef.current) {
-      URL.revokeObjectURL(elevenLabsObjectUrlRef.current)
-      elevenLabsObjectUrlRef.current = null
+    if (ttsObjectUrlRef.current) {
+      URL.revokeObjectURL(ttsObjectUrlRef.current)
+      ttsObjectUrlRef.current = null
     }
     if (typeof window !== 'undefined' && window.speechSynthesis) {
       window.speechSynthesis.cancel()
@@ -516,9 +516,9 @@ function StudentDashboard() {
       }
 
       const url = URL.createObjectURL(blob)
-      elevenLabsObjectUrlRef.current = url
+      ttsObjectUrlRef.current = url
       const audio = new Audio(url)
-      elevenLabsAudioRef.current = audio
+      ttsAudioRef.current = audio
       audio.playbackRate = Number.isFinite(rateOverride) ? rateOverride : ttsRateRef.current
 
       audio.onplay = () => {
@@ -530,21 +530,21 @@ function StudentDashboard() {
         if (audio.currentTime > 0 && !audio.ended) setTtsPaused(true)
       }
       audio.onended = () => {
-        if (elevenLabsObjectUrlRef.current) {
-          URL.revokeObjectURL(elevenLabsObjectUrlRef.current)
-          elevenLabsObjectUrlRef.current = null
+        if (ttsObjectUrlRef.current) {
+          URL.revokeObjectURL(ttsObjectUrlRef.current)
+          ttsObjectUrlRef.current = null
         }
-        elevenLabsAudioRef.current = null
+        ttsAudioRef.current = null
         setTtsSpeaking(false)
         setTtsPaused(false)
         setTtsActiveItemId(null)
       }
       audio.onerror = () => {
-        if (elevenLabsObjectUrlRef.current) {
-          URL.revokeObjectURL(elevenLabsObjectUrlRef.current)
-          elevenLabsObjectUrlRef.current = null
+        if (ttsObjectUrlRef.current) {
+          URL.revokeObjectURL(ttsObjectUrlRef.current)
+          ttsObjectUrlRef.current = null
         }
-        elevenLabsAudioRef.current = null
+        ttsAudioRef.current = null
         setTtsSpeaking(false)
         setTtsPaused(false)
         setTtsActiveItemId(null)
@@ -567,12 +567,12 @@ function StudentDashboard() {
     const useAzureTts = item?.responseMode === 'audio' && item?.teacher?.id
     const isActive = ttsActiveItemId === item.id
 
-    if (useAzureTts && elevenLabsAudioRef.current && isActive && ttsSpeaking) {
+    if (useAzureTts && ttsAudioRef.current && isActive && ttsSpeaking) {
       if (ttsPaused) {
-        elevenLabsAudioRef.current.play().catch(() => {})
+        ttsAudioRef.current.play().catch(() => {})
         setTtsPaused(false)
       } else {
-        elevenLabsAudioRef.current.pause()
+        ttsAudioRef.current.pause()
         setTtsPaused(true)
       }
       return
@@ -598,8 +598,8 @@ function StudentDashboard() {
   const handleTtsRateChange = (item, nextRate) => {
     setTtsRate(nextRate)
     const useAzureTts = item?.responseMode === 'audio' && item?.teacher?.id
-    if (useAzureTts && ttsActiveItemId === item.id && elevenLabsAudioRef.current) {
-      elevenLabsAudioRef.current.playbackRate = nextRate
+    if (useAzureTts && ttsActiveItemId === item.id && ttsAudioRef.current) {
+      ttsAudioRef.current.playbackRate = nextRate
       return
     }
     speakAnswerText(item, nextRate)

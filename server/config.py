@@ -40,9 +40,6 @@ class Config:
     AZURE_TEXT_TO_SPEECH_ENDPOINT = os.getenv("AZURE_TEXT_TO_SPEECH_ENDPOINT", "")
     AZURE_TEXT_TO_SPEECH_API_KEY = os.getenv("AZURE_TEXT_TO_SPEECH_API_KEY", "")
 
-    ELEVENLABS_API_KEY = os.getenv("ELEVENLABS_API_KEY", "")
-    ELEVENLABS_BASE_URL = os.getenv("ELEVENLABS_BASE_URL", "https://api.elevenlabs.io")
-    ELEVENLABS_TTS_MODEL = os.getenv("ELEVENLABS_TTS_MODEL", "eleven_turbo_v2_5")
 
     D_ID_API_KEY = os.getenv("D_ID_API_KEY", "")
     CLOUDINARY_URL = os.getenv("CLOUDINARY_URL", "")

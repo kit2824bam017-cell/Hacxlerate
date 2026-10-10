@@ -85,31 +85,3 @@ def synthesize_speech(text: str, voice_name: str = "en-US-AvaMultilingualNeural"
 
     return b""
 
-def clone_teacher_voice(audio_bytes: bytes, teacher_name: str) -> str:
-    config = current_app.config
-    api_key = config.get("ELEVENLABS_API_KEY")
-    base_url = config.get("ELEVENLABS_BASE_URL", "https://api.elevenlabs.io").rstrip("/")
-
-    if not api_key:
-        return "voice_sample_clone_mock_id"
-
-    url = f"{base_url}/v1/voices/add"
-    headers = {
-        "xi-api-key": api_key,
-    }
-    files = [
-        ("files", ("sample.wav", audio_bytes, "audio/wav"))
-    ]
-    data = {
-        "name": f"Teacher - {teacher_name}",
-        "description": "Cloned teacher voice from onboarding sample",
-    }
-
-    try:
-        resp = requests.post(url, headers=headers, files=files, data=data, timeout=60)
-        if resp.status_code in (200, 201):
-            return resp.json().get("voice_id", "")
-    except Exception as e:
-        print(f"[ELEVENLABS ERROR] {e}")
-
-    return ""

@@ -84,6 +84,5 @@ def get_teachers():
             "detected_teaching_style": prof.detected_teaching_style or "Concept-first",
             "subjects": subjects,
             "grades": prof.grades or [],
-            "elevenlabs_voice_id": prof.elevenlabs_voice_id,
         })
     return jsonify({"teachers": result})
