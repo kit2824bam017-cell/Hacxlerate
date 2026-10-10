@@ -220,7 +220,6 @@ class TeacherProfile(Base):
     number_of_syllabi = Column(Integer, nullable=True)
     number_of_materials = Column(Integer, nullable=True)
     teaching_explanation = Column(Text, nullable=True)
-    elevenlabs_voice_id = Column(String(64), nullable=True)
     detected_teaching_style = Column(String(128), nullable=True)
     onboarding_completed = Column(Boolean, default=False, nullable=False)
     tune_preferences = Column(JSON, nullable=True)
@@ -243,7 +242,6 @@ class TeacherProfile(Base):
             "number_of_syllabi": self.number_of_syllabi,
             "number_of_materials": self.number_of_materials,
             "teaching_explanation": self.teaching_explanation,
-            "elevenlabs_voice_id": self.elevenlabs_voice_id,
             "detected_teaching_style": self.detected_teaching_style,
             "onboarding_completed": self.onboarding_completed,
             "tune_preferences": self.tune_preferences or {},

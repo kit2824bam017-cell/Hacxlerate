@@ -4,7 +4,7 @@ from ..database import get_db
 from ..models import User, TeacherProfile, LearnTurn
 from ..services.auth_service import auth_required, hash_password, check_password, generate_otp
 from ..services.mailer import send_otp_email
-from ..services.speech_service import transcribe_audio_bytes, clone_teacher_voice
+from ..services.speech_service import transcribe_audio_bytes
 from ..services.ai_service import detect_teaching_style, chat_completion, build_teacher_system_prompt
 
 teacher_bp = Blueprint("teacher", __name__)
@@ -91,11 +91,6 @@ def teacher_onboarding(user):
         extracted_transcript = transcribe_audio_bytes(audio_bytes)
         if extracted_transcript:
             transcript = extracted_transcript
-
-        # Voice cloning
-        voice_id = clone_teacher_voice(audio_bytes, user.name)
-        if voice_id:
-            prof.elevenlabs_voice_id = voice_id
 
     # 2. Teaching style detection
     detected = detect_teaching_style(transcript)

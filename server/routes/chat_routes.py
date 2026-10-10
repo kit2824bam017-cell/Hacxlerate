@@ -72,7 +72,6 @@ def learn_chat():
         "teacher": {
             "id": teacher.id if teacher else None,
             "name": teacher_name,
-            "voice_id": teacher_prof.get("elevenlabs_voice_id"),
         }
     })
 
