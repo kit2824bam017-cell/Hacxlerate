@@ -1,6 +1,9 @@
 from flask import Blueprint, request, jsonify
 from ..database import get_db
-from ..models import User, StudentProfile, Board, BoardGrade, TeacherRating, StudentLearningRec, QuizAttempt, Quiz
+from ..models import (
+    User, StudentProfile, Board, BoardGrade, Subject, Curriculum,
+    CurriculumUnit, TeacherRating, StudentLearningRec, QuizAttempt, Quiz
+)
 from ..services.auth_service import auth_required
 from ..services.ai_service import homework_hint_vision
 
@@ -15,18 +18,58 @@ def student_dashboard(user):
     grade = db.query(BoardGrade).filter_by(id=user.grade_id).first() if user.grade_id else None
 
     # Recommendations
-    recs = db.query(StudentLearningRec).filter_by(student_id=user.id).order_by(StudentLearningRec.created_at.desc()).limit(5).all()
+    recs = db.query(StudentLearningRec).filter_by(student_id=user.id, status="open").order_by(StudentLearningRec.created_at.desc()).limit(5).all()
 
     # Recent attempts
     attempts = db.query(QuizAttempt).filter_by(student_id=user.id).order_by(QuizAttempt.created_at.desc()).limit(5).all()
 
+    # Find curriculum for this student's board and grade
+    curricula = []
+    if board and grade:
+        curricula = db.query(Curriculum).filter_by(board_id=board.id, grade_id=grade.id).all()
+    if not curricula and board:
+        curricula = db.query(Curriculum).filter_by(board_id=board.id).all()
+    if not curricula:
+        curricula = db.query(Curriculum).all()
+
+    # Build subjects tree with units and topics
+    subjects_tree = []
+    seen_subjects = set()
+    for c in curricula:
+        if not c.subject or c.subject.id in seen_subjects:
+            continue
+        seen_subjects.add(c.subject.id)
+        subj_data = c.subject.to_dict()
+        subj_data["units"] = [u.to_dict() for u in c.units]
+        subjects_tree.append(subj_data)
+
+    user_dict = user.to_dict()
+    user_dict["board"] = board.to_dict() if board else {"id": 1, "name": "CBSE", "slug": "cbse"}
+    user_dict["grade"] = grade.to_dict() if grade else {"id": 1, "label": user.grade or "Class 7"}
+
     return jsonify({
-        "user": user.to_dict(),
+        "user": user_dict,
         "board": board.to_dict() if board else None,
         "grade": grade.to_dict() if grade else None,
+        "subjects": subjects_tree,
         "learning_recommendations": [r.to_dict() for r in recs],
         "recent_attempts": [a.to_dict() for a in attempts],
     })
+
+@student_bp.route("/student/learning-recs", methods=["GET"])
+@auth_required(roles="student")
+def get_learning_recs(user):
+    db = get_db()
+    recs = db.query(StudentLearningRec).filter_by(student_id=user.id, status="open").order_by(StudentLearningRec.created_at.desc()).all()
+    return jsonify({"recs": [r.to_dict() for r in recs]})
+
+@student_bp.route("/student/learning-recs/dismiss-all", methods=["POST"])
+@auth_required(roles="student")
+def dismiss_all_learning_recs(user):
+    db = get_db()
+    db.query(StudentLearningRec).filter_by(student_id=user.id).update({"status": "dismissed"})
+    db.commit()
+    return jsonify({"message": "All recommendations dismissed."})
 
 @student_bp.route("/student/session-feedback", methods=["POST"])
 @auth_required(roles="student")

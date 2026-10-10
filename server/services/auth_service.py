@@ -25,7 +25,7 @@ def generate_otp() -> str:
 def generate_token(user: User) -> str:
     secret = current_app.config["SECRET_KEY"]
     payload = {
-        "sub": user.id,
+        "sub": str(user.id),
         "email": user.email,
         "role": user.role,
         "iat": datetime.utcnow(),
@@ -49,7 +49,11 @@ def get_current_user():
     if not payload or "sub" not in payload:
         return None
     db = get_db()
-    return db.query(User).filter_by(id=payload["sub"]).first()
+    try:
+        uid = int(payload["sub"])
+        return db.query(User).filter_by(id=uid).first()
+    except (ValueError, TypeError):
+        return None
 
 def auth_required(roles=None):
     if isinstance(roles, str):

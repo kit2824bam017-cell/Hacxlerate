@@ -1280,62 +1280,221 @@ function StudentDashboard() {
       </div>
 
       {learningMode === 'home' && (
-        <div className="max-w-[1100px] w-full mx-auto px-4 md:px-6 py-8">
-          <h1 className="font-[family-name:var(--font-flap)] text-3xl md:text-4xl font-bold tracking-[0.04em] uppercase text-[var(--flap-ink)] m-0">
-            How do you want to learn today?
-          </h1>
-          <p className="text-[var(--flap-mute)] mt-2 text-sm leading-relaxed m-0">
-            Chat with an AI teacher, or take a quiz assigned to your grade.
-          </p>
-          {learningRecs[0] ? (
-            <div className="mt-4 border border-[var(--flap-amber)]/40 bg-[var(--flap-face)] px-4 py-3 text-sm flex items-start gap-3">
-              <div className="min-w-0 flex-1">
-                <p className="font-[family-name:var(--font-flap)] text-[11px] tracking-[0.14em] uppercase text-[var(--flap-amber)] m-0">
-                  Recommended next
-                </p>
-                <p className="text-[var(--flap-mute)] mt-1 m-0">{learningRecs[0].reason}</p>
+        <div className="max-w-[1200px] w-full mx-auto px-4 md:px-8 py-8 space-y-8 animate-auth-fade">
+          {/* Welcome Hero Banner - Supaste Cobalt Aura */}
+          <div className="p-8 md:p-10 rounded-3xl border border-[var(--board-rule)] bg-[var(--board-steel-card)] backdrop-blur-2xl shadow-xl relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-80 h-80 bg-[var(--flap-primary)]/15 rounded-full blur-3xl pointer-events-none" />
+            
+            <div className="relative z-10 max-w-2xl">
+              <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[var(--flap-primary)]/15 border border-[var(--flap-accent)]/30 text-[var(--flap-accent)] text-xs font-semibold uppercase tracking-wider mb-4 shadow-sm">
+                <span>🎓</span>
+                <span>{boardLabel || 'Curriculum'} · {gradeLabel || 'Grade 7'}</span>
               </div>
-              <button
-                type="button"
-                onClick={dismissFollowUp}
-                className="shrink-0 px-2 py-1 text-[var(--flap-mute)] hover:text-[var(--flap-ink)] border-none bg-transparent cursor-pointer text-lg leading-none"
-                aria-label="Dismiss recommendation"
-              >
-                ×
-              </button>
+              <h1 className="font-[family-name:var(--font-display)] text-3xl md:text-5xl font-extrabold text-[var(--flap-ink)] tracking-tight leading-tight mb-3">
+                Welcome back, {displayName.split(' ')[0]}
+              </h1>
+              <p className="text-[var(--flap-mute)] text-sm md:text-base leading-relaxed">
+                Your AI teachers are calibrated to your curriculum. Start a 1-on-1 Socratic chat or test your chapter mastery with instant guided diagnostics.
+              </p>
+            </div>
+
+            {/* Quick stats pills */}
+            <div className="mt-8 pt-6 border-t border-[var(--board-rule)] grid grid-cols-2 sm:grid-cols-4 gap-4">
+              <div className="p-3 rounded-xl bg-[var(--board-steel-elevated)]/60 border border-[var(--board-rule)]">
+                <p className="text-[11px] text-[var(--flap-mute)] uppercase font-semibold">Active Teachers</p>
+                <p className="text-xl font-extrabold text-[var(--flap-ink)] mt-0.5">{teachers.length || 4}</p>
+              </div>
+              <div className="p-3 rounded-xl bg-[var(--board-steel-elevated)]/60 border border-[var(--board-rule)]">
+                <p className="text-[11px] text-[var(--flap-mute)] uppercase font-semibold">Your Curriculum</p>
+                <p className="text-xl font-extrabold text-[var(--flap-accent)] mt-0.5">{boardLabel ? boardLabel.split(' ')[0] : 'CBSE'}</p>
+              </div>
+              <div className="p-3 rounded-xl bg-[var(--board-steel-elevated)]/60 border border-[var(--board-rule)]">
+                <p className="text-[11px] text-[var(--flap-mute)] uppercase font-semibold">Guidance Mode</p>
+                <p className="text-xl font-extrabold text-emerald-500 mt-0.5">Socratic Hints</p>
+              </div>
+              <div className="p-3 rounded-xl bg-[var(--board-steel-elevated)]/60 border border-[var(--board-rule)]">
+                <p className="text-[11px] text-[var(--flap-mute)] uppercase font-semibold">Doubts Solved</p>
+                <p className="text-xl font-extrabold text-[var(--flap-accent)] mt-0.5">{doubtHistory.length || 'Ready'}</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Recommended next topic banner */}
+          {learningRecs[0] ? (
+            <div className="p-5 md:p-6 rounded-2xl border border-[var(--board-rule-strong)] bg-[var(--board-steel-card)] backdrop-blur-xl shadow-md flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <div className="flex items-start gap-4 min-w-0">
+                <div className="w-12 h-12 rounded-xl bg-[var(--flap-primary)]/20 border border-[var(--flap-accent)]/30 text-[var(--flap-accent)] flex items-center justify-center text-2xl shrink-0 shadow-sm">
+                  🎯
+                </div>
+                <div className="min-w-0">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs font-bold uppercase tracking-wider text-[var(--flap-accent)]">Recommended Focus</span>
+                    <span className="text-[11px] px-2 py-0.5 rounded-full bg-[var(--flap-primary)]/20 text-[var(--flap-accent)] font-semibold">{learningRecs[0].subject || 'Science'}</span>
+                  </div>
+                  <p className="text-sm font-bold text-[var(--flap-ink)] mt-1 truncate">
+                    {learningRecs[0].lesson || 'Nutrition in Plants'}
+                  </p>
+                  <p className="text-xs text-[var(--flap-mute)] mt-0.5">{learningRecs[0].reason}</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-2.5 shrink-0 w-full sm:w-auto">
+                <button
+                  type="button"
+                  onClick={() => {
+                    const rec = learningRecs[0]
+                    const matchedTeacher = teachers.find((t) => t.id === rec.teacher_id) || teachers[0]
+                    if (matchedTeacher) handleSelectTeacher(matchedTeacher)
+                    setLearningMode('learn')
+                    setTeacherTopTool('learn')
+                  }}
+                  className="flex-1 sm:flex-none px-4 py-2.5 rounded-xl font-semibold text-xs btn-gradient cursor-pointer flex items-center justify-center gap-1.5"
+                >
+                  <span>Practice with Teacher</span>
+                  <span>→</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={dismissFollowUp}
+                  className="p-2 text-[var(--flap-mute)] hover:text-[var(--flap-ink)] rounded-lg hover:bg-black/5 dark:hover:bg-white/[0.05] transition-colors border-none bg-transparent cursor-pointer"
+                  aria-label="Dismiss recommendation"
+                >
+                  ✕
+                </button>
+              </div>
             </div>
           ) : null}
-          <div className="grid md:grid-cols-2 gap-3 mt-8">
+
+          {/* Two primary Gateway Cards */}
+          <div className="grid md:grid-cols-2 gap-6">
             <button
               type="button"
               onClick={() => setLearningMode('learn')}
-              className="text-left border border-[var(--board-rule)] bg-[var(--board-steel-deep)] p-5 hover:border-[var(--flap-amber)]/50 cursor-pointer"
+              className="text-left p-8 rounded-3xl border border-[var(--board-rule)] bg-[var(--board-steel-card)] hover:bg-[var(--board-steel-elevated)] hover:border-[var(--board-rule-strong)] transition-all duration-300 group cursor-pointer backdrop-blur-xl shadow-lg flex flex-col justify-between relative overflow-hidden"
             >
-              <p className="font-[family-name:var(--font-flap)] text-[11px] tracking-[0.16em] uppercase text-[var(--flap-amber)] m-0">
-                Departures
-              </p>
-              <p className="font-[family-name:var(--font-flap)] text-lg font-semibold tracking-[0.06em] uppercase text-[var(--flap-ink)] mt-2 m-0">
-                Learn through Chat
-              </p>
-              <p className="text-sm text-[var(--flap-mute)] mt-2 m-0 leading-relaxed">
-                Ask questions, get guided explanations, and work through ideas with your AI teacher.
-              </p>
+              <div className="absolute top-0 right-0 w-48 h-48 bg-[var(--flap-primary)]/10 rounded-full blur-2xl group-hover:bg-[var(--flap-accent)]/20 transition-colors" />
+
+              <div>
+                <div className="flex items-center justify-between mb-6">
+                  <div className="w-14 h-14 rounded-2xl bg-[var(--flap-primary)]/15 border border-[var(--flap-accent)]/30 text-[var(--flap-accent)] flex items-center justify-center text-3xl group-hover:scale-110 transition-transform shadow-sm">
+                    💬
+                  </div>
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-[var(--flap-accent)] px-3 py-1 rounded-full bg-[var(--flap-primary)]/15 border border-[var(--flap-accent)]/25">
+                    Interactive 1-on-1
+                  </span>
+                </div>
+
+                <h2 className="font-[family-name:var(--font-display)] text-2xl font-bold text-[var(--flap-ink)] group-hover:text-[var(--flap-accent)] transition-colors mb-2">
+                  Learn through Chat
+                </h2>
+
+                <p className="text-[var(--flap-mute)] text-sm leading-relaxed mb-6">
+                  Ask homework doubts, get guiding Socratic hints, listen to neural voice explanations, and work step-by-step through any tricky concept.
+                </p>
+
+                <div className="flex flex-wrap gap-2 mb-6">
+                  <span className="text-[11px] px-2.5 py-1 rounded-lg bg-[var(--board-steel-elevated)] text-[var(--flap-mute)] border border-[var(--board-rule)]">🎙️ Voice Audio</span>
+                  <span className="text-[11px] px-2.5 py-1 rounded-lg bg-[var(--board-steel-elevated)] text-[var(--flap-mute)] border border-[var(--board-rule)]">📸 Photo OCR</span>
+                  <span className="text-[11px] px-2.5 py-1 rounded-lg bg-[var(--board-steel-elevated)] text-[var(--flap-mute)] border border-[var(--board-rule)]">🧠 Socratic Step-by-Step</span>
+                </div>
+              </div>
+
+              <div className="flex items-center text-[var(--flap-accent)] font-bold text-sm gap-2 mt-2">
+                <span>Choose a Teacher & Start</span>
+                <span className="group-hover:translate-x-1 transition-transform">→</span>
+              </div>
             </button>
+
             <button
               type="button"
               onClick={() => setLearningMode('quiz')}
-              className="text-left border border-[var(--board-rule)] bg-[var(--board-steel-deep)] p-5 hover:border-[var(--flap-amber)]/50 cursor-pointer"
+              className="text-left p-8 rounded-3xl border border-[var(--board-rule)] bg-[var(--board-steel-card)] hover:bg-[var(--board-steel-elevated)] hover:border-[var(--board-rule-strong)] transition-all duration-300 group cursor-pointer backdrop-blur-xl shadow-lg flex flex-col justify-between relative overflow-hidden"
             >
-              <p className="font-[family-name:var(--font-flap)] text-[11px] tracking-[0.16em] uppercase text-[var(--flap-amber)] m-0">
-                Arrivals
-              </p>
-              <p className="font-[family-name:var(--font-flap)] text-lg font-semibold tracking-[0.06em] uppercase text-[var(--flap-ink)] mt-2 m-0">
-                Quiz
-              </p>
-              <p className="text-sm text-[var(--flap-mute)] mt-2 m-0 leading-relaxed">
-                Take assessments for your grade. After each answer, a tutor helps you understand why.
-              </p>
+              <div className="absolute top-0 right-0 w-48 h-48 bg-[var(--flap-accent)]/10 rounded-full blur-2xl group-hover:bg-[var(--flap-primary)]/20 transition-colors" />
+
+              <div>
+                <div className="flex items-center justify-between mb-6">
+                  <div className="w-14 h-14 rounded-2xl bg-[var(--flap-primary)]/15 border border-[var(--flap-accent)]/30 text-[var(--flap-accent)] flex items-center justify-center text-3xl group-hover:scale-110 transition-transform shadow-sm">
+                    📝
+                  </div>
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-[var(--flap-accent)] px-3 py-1 rounded-full bg-[var(--flap-primary)]/15 border border-[var(--flap-accent)]/25">
+                    Mastery Diagnostics
+                  </span>
+                </div>
+
+                <h2 className="font-[family-name:var(--font-display)] text-2xl font-bold text-[var(--flap-ink)] group-hover:text-[var(--flap-accent)] transition-colors mb-2">
+                  Curriculum Quizzes
+                </h2>
+
+                <p className="text-[var(--flap-mute)] text-sm leading-relaxed mb-6">
+                  Take chapter assessments matched to your grade. If you make a mistake, an integrated AI tutor immediately explains why and helps you fix it.
+                </p>
+
+                <div className="flex flex-wrap gap-2 mb-6">
+                  <span className="text-[11px] px-2.5 py-1 rounded-lg bg-[var(--board-steel-elevated)] text-[var(--flap-mute)] border border-[var(--board-rule)]">📊 Instant Diagnostics</span>
+                  <span className="text-[11px] px-2.5 py-1 rounded-lg bg-[var(--board-steel-elevated)] text-[var(--flap-mute)] border border-[var(--board-rule)]">💡 Misconception Hints</span>
+                  <span className="text-[11px] px-2.5 py-1 rounded-lg bg-[var(--board-steel-elevated)] text-[var(--flap-mute)] border border-[var(--board-rule)]">🎯 Next Recommendations</span>
+                </div>
+              </div>
+
+              <div className="flex items-center text-[var(--flap-accent)] font-bold text-sm gap-2 mt-2">
+                <span>View Assigned Quizzes</span>
+                <span className="group-hover:translate-x-1 transition-transform">→</span>
+              </div>
             </button>
+          </div>
+
+          {/* Teacher Roster Showcase */}
+          <div className="p-6 md:p-8 rounded-3xl border border-[var(--board-rule)] bg-[var(--board-steel-card)] backdrop-blur-xl shadow-md">
+            <div className="flex items-center justify-between mb-5">
+              <div>
+                <h3 className="font-[family-name:var(--font-display)] text-lg font-bold text-[var(--flap-ink)]">Your Teaching Faculty</h3>
+                <p className="text-xs text-[var(--flap-mute)]">Select any teacher to study with their distinctive explaining approach</p>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  setLearningMode('learn')
+                  setTeacherTopTool('teacher')
+                }}
+                className="text-xs text-[var(--flap-accent)] hover:underline font-semibold border-none bg-transparent cursor-pointer"
+              >
+                Browse All ({teachers.length}) →
+              </button>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              {teachers.slice(0, 4).map((t) => (
+                <div
+                  key={t.id}
+                  onClick={() => {
+                    handleSelectTeacher(t)
+                    setLearningMode('learn')
+                    setTeacherTopTool('learn')
+                  }}
+                  className="p-4 rounded-2xl border border-[var(--board-rule)] bg-[var(--board-steel-elevated)]/60 hover:bg-[var(--board-steel-elevated)] hover:border-[var(--board-rule-strong)] transition-all cursor-pointer flex flex-col justify-between group"
+                >
+                  <div className="flex items-center gap-3 mb-3">
+                    <img
+                      src={t.avatar_url || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=96&h=96&fit=crop&crop=faces'}
+                      alt={t.name}
+                      className="w-11 h-11 rounded-full object-cover border border-[var(--board-rule)] group-hover:border-[var(--flap-accent)] transition-colors shrink-0 shadow-sm"
+                    />
+                    <div className="min-w-0">
+                      <p className="text-sm font-bold text-[var(--flap-ink)] truncate group-hover:text-[var(--flap-accent)] transition-colors">{t.name}</p>
+                      <p className="text-[11px] text-[var(--flap-mute)] truncate">{t.school || 'Faculty'}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-between pt-2 border-t border-[var(--board-rule)]">
+                    <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-[var(--flap-primary)]/10 text-[var(--flap-accent)] border border-[var(--board-rule)]">
+                      {t.style || 'Concept-first'}
+                    </span>
+                    <span className="text-xs font-bold text-[var(--flap-accent)]">
+                      ★ {typeof t.rating === 'number' ? t.rating.toFixed(1) : t.rating || '4.9'}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       )}
@@ -1450,38 +1609,50 @@ function StudentDashboard() {
                         </button>
                       </div>
 
-                      <div className="flex-1 min-h-0 flex flex-col overflow-hidden border border-[var(--board-rule)]">
-                        <div className="shrink-0 grid grid-cols-[1.4fr_1fr_0.9fr] gap-x-3 px-3 py-1.5 border-b border-[var(--board-rule)] bg-[var(--board-steel-deep)]">
-                          {['Name', 'Style', 'Rating'].map((h) => (
-                            <span
-                              key={h}
-                              className="font-[family-name:var(--font-flap)] text-[9px] tracking-[0.14em] uppercase text-[var(--flap-mute)]"
-                            >
-                              {h}
-                            </span>
-                          ))}
-                        </div>
-                        <div className="flex-1 min-h-0 overflow-y-auto">
-                          {filteredTeachers.map((t) => (
-                            <FlapRow
-                              key={t.id}
-                              selected={selectedTeacher?.id === t.id}
-                              onClick={() => handleSelectTeacher(t)}
-                              className="grid-cols-none"
-                              cols={[
-                                { label: t.name, width: '1.4fr' },
-                                { label: t.style || '—', width: '1fr', mute: true },
-                                {
-                                  label: teacherRatingSummary(t),
-                                  width: '0.9fr',
-                                  className: 'text-[var(--flap-amber)]',
-                                },
-                              ]}
-                            />
-                          ))}
+                      <div className="flex-1 min-h-0 flex flex-col overflow-hidden rounded-xl border border-white/[0.08] bg-black/20">
+                        <div className="flex-1 min-h-0 overflow-y-auto p-2.5 space-y-2">
+                          {filteredTeachers.map((t) => {
+                            const isSel = selectedTeacher?.id === t.id
+                            return (
+                              <div
+                                key={t.id}
+                                onClick={() => handleSelectTeacher(t)}
+                                className={`p-3.5 rounded-xl border transition-all duration-200 cursor-pointer flex items-center justify-between gap-3 ${
+                                  isSel
+                                    ? 'bg-amber-500/15 border-amber-500/50 shadow-[0_0_16px_rgba(245,158,11,0.15)]'
+                                    : 'bg-white/[0.02] border-white/[0.06] hover:bg-white/[0.05] hover:border-white/[0.12]'
+                                }`}
+                              >
+                                <div className="flex items-center gap-3 min-w-0">
+                                  <img
+                                    src={t.avatar_url || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=96&h=96&fit=crop&crop=faces'}
+                                    alt={t.name}
+                                    className={`w-10 h-10 rounded-full object-cover border shrink-0 ${isSel ? 'border-amber-400 ring-2 ring-amber-400/30' : 'border-white/10'}`}
+                                  />
+                                  <div className="min-w-0">
+                                    <p className={`text-sm font-bold truncate ${isSel ? 'text-amber-300' : 'text-white'}`}>{t.name}</p>
+                                    <p className="text-[11px] text-slate-400 truncate">{t.school || 'Faculty'}</p>
+                                  </div>
+                                </div>
+                                <div className="flex items-center gap-2.5 shrink-0">
+                                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-amber-500/10 text-amber-400 border border-amber-500/20">
+                                    {t.style || 'Concept-first'}
+                                  </span>
+                                  <span className="text-xs font-bold text-amber-400 min-w-[3.2rem] text-right">
+                                    ★ {typeof t.rating === 'number' ? t.rating.toFixed(1) : t.rating || '4.9'}
+                                  </span>
+                                  {isSel ? (
+                                    <span className="w-6 h-6 rounded-full bg-amber-500 text-black flex items-center justify-center text-xs font-bold">✓</span>
+                                  ) : (
+                                    <span className="text-xs text-slate-300 px-2.5 py-1 rounded-lg border border-white/[0.08] bg-white/[0.02]">Select</span>
+                                  )}
+                                </div>
+                              </div>
+                            )
+                          })}
                           {filteredTeachers.length === 0 && (
-                            <p className="text-sm text-[var(--flap-mute)] italic px-3 py-3 m-0">
-                              No teachers match your search/filter.
+                            <p className="text-sm text-slate-400 italic p-6 text-center">
+                              No teachers match your search or filter.
                             </p>
                           )}
                         </div>

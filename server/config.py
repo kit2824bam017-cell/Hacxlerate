@@ -13,8 +13,11 @@ class Config:
     # Database configuration
     # Supports PostgreSQL; falls back gracefully to SQLite if not provided
     DATABASE_URL = os.getenv("DATABASE_URL")
-    if not DATABASE_URL:
+    if not DATABASE_URL or DATABASE_URL.strip() in ("", "sqlite:///learnai.db"):
         DATABASE_URL = f"sqlite:///{os.path.join(BASE_DIR, 'learnai.db')}"
+    elif DATABASE_URL.startswith("sqlite:///") and not os.path.isabs(DATABASE_URL[10:]):
+        rel_path = DATABASE_URL[10:]
+        DATABASE_URL = f"sqlite:///{os.path.join(BASE_DIR, rel_path)}"
     elif DATABASE_URL.startswith("postgres://"):
         DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
 

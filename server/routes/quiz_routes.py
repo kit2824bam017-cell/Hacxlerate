@@ -191,26 +191,30 @@ def quiz_analytics(user, quiz_id):
 @auth_required(roles="student")
 def list_student_quizzes(user):
     db = get_db()
-    # List quizzes matching grade
     quizzes = db.query(Quiz).filter_by(status="published").all()
 
-    # Get attempts for this student
     attempts_by_quiz = {a.quiz_id: a for a in user.quiz_attempts}
 
+    all_quizzes = []
     available, in_progress, completed = [], [], []
     for q in quizzes:
         att = attempts_by_quiz.get(q.id)
         q_data = q.to_dict()
         if not att:
+            q_data["bucket"] = "available"
             available.append(q_data)
         elif att.status == "completed":
+            q_data["bucket"] = "completed"
             q_data["attempt"] = att.to_dict()
             completed.append(q_data)
         else:
+            q_data["bucket"] = "active"
             q_data["attempt"] = att.to_dict()
             in_progress.append(q_data)
+        all_quizzes.append(q_data)
 
     return jsonify({
+        "quizzes": all_quizzes,
         "available": available,
         "in_progress": in_progress,
         "completed": completed,

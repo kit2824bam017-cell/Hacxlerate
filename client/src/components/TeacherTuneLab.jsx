@@ -2,6 +2,7 @@
 
 import PropTypes from 'prop-types'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { buildTuneLabSystemPrompt, TUNE_FOLLOWUPS } from '../prompts/tuneLabPrompt.js'
 import { sendChatMessage, fetchTeacherTtsAudio, generateDidVideo, updateTeacherProfile } from '../services/api.js'
 import { FlapPanel, FlapPanelHead, FlapButton, FlapInput } from './ui/Board.jsx'
@@ -39,7 +40,7 @@ const SOFT_HINTS = [
 ]
 
 export default function TeacherTuneLab({ user, profile, onSaved }) {
-  const router = useRouter()
+  const navigate = useNavigate()
   const teacherId = user?.id
   const displayName = user?.name || 'Teacher'
   const avatarUrl = profile?.avatar_url || user?.avatar_url || ''
@@ -191,7 +192,7 @@ export default function TeacherTuneLab({ user, profile, onSaved }) {
   }
 
   const handleRerecordVoice = () => {
-    router.push('/teacher-onboarding?step=2')
+    navigate('/teacher-onboarding?step=2')
   }
 
   const handleLoadVideo = async () => {

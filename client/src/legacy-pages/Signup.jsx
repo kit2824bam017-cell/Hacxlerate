@@ -1,11 +1,12 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import FormInput from '../components/FormInput.jsx'
 import InstitutionInput from '../components/InstitutionInput.jsx'
 import RoleToggle from '../components/RoleToggle.jsx'
 import SubjectChips from '../components/SubjectChips.jsx'
+import ThemeSwitcher from '../components/ThemeSwitcher.jsx'
 import { useAuth } from '../context/useAuth.js'
 import {
   ensureInstitution,
@@ -174,24 +175,6 @@ function Signup() {
     setOtpStage(true)
   }
 
-  const handleOtpChange = (value, idx) => {
-    const digit = value.replace(/\D/g, '').slice(-1)
-    setOtp((prev) => {
-      const next = [...prev]
-      next[idx] = digit
-      return next
-    })
-    if (digit && idx < 5) {
-      otpInputsRef.current[idx + 1]?.focus()
-    }
-  }
-
-  const handleOtpKeyDown = (e, idx) => {
-    if (e.key !== 'Backspace') return
-    if (otp[idx]) return
-    if (idx > 0) otpInputsRef.current[idx - 1]?.focus()
-  }
-
   const handleVerifyOtp = async () => {
     if (!pendingUserId) {
       setOtpError('Session expired. Please sign up again.')
@@ -226,69 +209,98 @@ function Signup() {
     navigate(pendingRole === 'teacher' ? '/teacher-onboarding' : '/student', { replace: true })
   }
 
-  const handleResendOtp = async () => {
-    if (!pendingUserId || resendCountdown > 0 || otpResending) return
-    setOtpResending(true)
-    setOtpError('')
-    const { data, error } = await resendOtp({ user_id: pendingUserId })
-    setOtpResending(false)
-
-    if (error) {
-      if (error.message) setOtpError(error.message)
-      return
-    }
-
-    if (data?.otp_code) {
-      const code = String(data.otp_code)
-      localStorage.setItem('dev_otp', code)
-      setDisplayedOtp(code)
-      setOtp(code.split('').slice(0, 6))
-    }
-    startResendCountdown(data?.retry_after || OTP_RESEND_SECONDS)
-  }
-
   return (
-    <div className="min-h-[100dvh] flex items-stretch justify-center bg-[var(--board-steel-deep)]">
-      <div className="w-full max-w-[960px] grid grid-cols-1 md:grid-cols-[0.9fr_1.1fr] bg-[var(--board-steel)] border border-[var(--board-rule)] animate-auth-fade md:self-center md:my-8">
+    <div className="min-h-[100dvh] flex items-center justify-center p-4 md:p-8 bg-[var(--board-steel-deep)] relative overflow-hidden transition-colors duration-300">
+      {/* Floating Theme Switcher */}
+      <div className="absolute top-4 right-4 z-30">
+        <ThemeSwitcher />
+      </div>
 
-        <aside className="hidden md:flex flex-col justify-end p-10 bg-[var(--board-steel-deep)] text-[var(--flap-ink)] border-r border-[var(--board-rule)] relative" aria-hidden="true">
-          <div className="relative z-10 max-w-xs">
-            <p className="font-[family-name:var(--font-flap)] text-[1.6rem] font-semibold tracking-[0.04em] uppercase mb-2">
-              Learn deeper. Move faster.
+      {/* Background ambient radial gradients */}
+      <div className="absolute top-1/4 right-1/4 translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-[var(--flap-primary)]/15 rounded-full blur-[150px] pointer-events-none" />
+      <div className="absolute bottom-1/4 left-1/4 -translate-x-1/2 translate-y-1/2 w-[500px] h-[500px] bg-[var(--flap-accent)]/15 rounded-full blur-[130px] pointer-events-none" />
+
+      <div className="w-full max-w-[1080px] grid grid-cols-1 lg:grid-cols-[1fr_1.2fr] gap-8 items-center relative z-10 animate-auth-fade my-6">
+        {/* Left side value hero */}
+        <aside className="hidden lg:flex flex-col justify-between p-10 h-full rounded-2xl border border-[var(--board-rule)] bg-[var(--board-steel-card)] backdrop-blur-2xl shadow-2xl relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-48 h-48 bg-[var(--flap-primary)]/15 rounded-full blur-3xl pointer-events-none" />
+
+          <div>
+            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[var(--flap-primary)]/15 border border-[var(--flap-accent)]/30 text-[var(--flap-accent)] text-xs font-semibold tracking-wide uppercase mb-6 shadow-sm">
+              <span>🚀</span>
+              Join LearnAI
+            </div>
+
+            <h1 className="font-[family-name:var(--font-display)] text-3xl md:text-4xl font-extrabold text-[var(--flap-ink)] leading-tight tracking-tight mb-4">
+              Learn deeper. Teach without limits.
+            </h1>
+
+            <p className="text-[var(--flap-mute)] text-sm leading-relaxed mb-6">
+              Whether you are a student seeking 24/7 tutor clarity or a teacher looking to scale your personal teaching identity, LearnAI bridges the classroom gap.
             </p>
-            <p className="text-sm text-[var(--flap-mute)] leading-relaxed">
-              Students get clearer, quicker answers in each teacher&apos;s real style—and teachers stay within reach
-              24/7 through AI that carries their voice into every study session.
-            </p>
+
+            <div className="space-y-4 mb-6">
+              <div className="p-4 rounded-xl bg-[var(--board-steel-elevated)]/60 border border-[var(--board-rule)]">
+                <p className="text-xs font-bold text-[var(--flap-accent)] uppercase tracking-wider mb-1">For Students</p>
+                <p className="text-xs text-[var(--flap-mute)]">
+                  Always-available help from your trusted teacher, aligned strictly to your exact school curriculum board and chapter topics.
+                </p>
+              </div>
+
+              <div className="p-4 rounded-xl bg-[var(--board-steel-elevated)]/60 border border-[var(--board-rule)]">
+                <p className="text-xs font-bold text-[var(--flap-accent)] uppercase tracking-wider mb-1">For Teachers</p>
+                <p className="text-xs text-[var(--flap-mute)]">
+                  Record one 35s voice sample. Our AI captures your pedagogy and answers your students 24/7, providing you aggregate struggle analytics.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className="text-xs text-[var(--flap-mute)] border-t border-[var(--board-rule)] pt-4">
+            Secured with end-to-end curriculum alignment and privacy-first student logging.
           </div>
         </aside>
 
-        <div className="px-7 py-9 md:px-10 overflow-y-auto min-w-0">
-          {!otpStage && (
-            <header className="mb-5">
-              <p className="font-[family-name:var(--font-flap)] text-[1.6rem] font-semibold tracking-[0.04em] uppercase text-[var(--flap-ink)] mb-0.5">
-                Create your LearnAI account
-              </p>
-              <p className="text-sm text-[var(--flap-mute)]">Personalized help for learners; your teaching, always on for them.</p>
-            </header>
-          )}
-
-          {!otpStage && (
-            <div className="mb-4">
-              <RoleToggle value={role} onChange={setRole} />
-            </div>
-          )}
-
-          {generalError && (
-            <div className="mb-4 px-3 py-2.5 border border-[var(--flap-cancel)]/50 text-[var(--flap-cancel)] text-sm">
-              {generalError}
-            </div>
-          )}
-
+        {/* Right side registration form */}
+        <div className="p-8 md:p-10 rounded-2xl border border-[var(--board-rule)] bg-[var(--board-steel-card)] backdrop-blur-2xl shadow-2xl">
           {!otpStage ? (
             <>
-              <form className="grid gap-3.5 min-w-0" onSubmit={handleSubmit} noValidate>
-                <FormInput label="Name" name="name" value={form.name} onChange={handleChange} error={errors.name} required />
+              <header className="mb-6">
+                <div className="flex items-center gap-2.5 mb-2">
+                  <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-[var(--btn-gradient-from)] to-[var(--btn-gradient-to)] flex items-center justify-center font-black text-white text-xs shadow-sm">
+                    L
+                  </div>
+                  <span className="font-[family-name:var(--font-display)] font-bold text-lg text-[var(--flap-ink)]">LearnAI</span>
+                </div>
+                <h2 className="font-[family-name:var(--font-display)] text-2xl font-bold text-[var(--flap-ink)]">
+                  Create your account
+                </h2>
+                <p className="text-xs md:text-sm text-[var(--flap-mute)] mt-1">
+                  Select your role to configure your learning or teaching workspace.
+                </p>
+              </header>
+
+              <div className="mb-5">
+                <RoleToggle value={role} onChange={setRole} />
+              </div>
+
+              {generalError && (
+                <div className="mb-5 p-3 rounded-xl border border-red-500/40 bg-red-500/10 text-red-300 text-xs flex items-center gap-2">
+                  <span>⚠️</span>
+                  <span>{generalError}</span>
+                </div>
+              )}
+
+              <form className="space-y-4" onSubmit={handleSubmit} noValidate>
+                <FormInput
+                  label="Full Name"
+                  name="name"
+                  placeholder="e.g. Dr. Jane Doe"
+                  value={form.name}
+                  onChange={handleChange}
+                  error={errors.name}
+                  required
+                />
 
                 {isTeacher ? (
                   <>
@@ -301,7 +313,15 @@ function Signup() {
                       error={errors.subjects}
                     />
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                      <FormInput label="Grade they handle" name="grade" value={form.grade} onChange={handleChange} placeholder="E.g. Undergraduate, 10th, 12th" error={errors.grade} required />
+                      <FormInput
+                        label="Grades Taught"
+                        name="grade"
+                        value={form.grade}
+                        onChange={handleChange}
+                        placeholder="E.g. Class 7, 8, 9"
+                        error={errors.grade}
+                        required
+                      />
                       <InstitutionInput
                         value={form.institution}
                         onChange={(inst) => setForm((prev) => ({ ...prev, institution: inst }))}
@@ -315,76 +335,122 @@ function Signup() {
                 ) : (
                   <>
                     <FormInput
-                      label="Board"
+                      label="Curriculum Board"
                       name="boardId"
                       value={form.boardId}
                       onChange={handleChange}
                       as="select"
-                      options={[{ value: '', label: 'Select board' }, ...boards.map((b) => ({ value: String(b.id), label: b.name }))]}
+                      options={[{ value: '', label: 'Select your curriculum board' }, ...boards.map((b) => ({ value: String(b.id), label: b.name }))]}
                       error={errors.board_id}
                       required
                     />
-                    <FormInput label="Current Grade" name="currentGrade" value={form.currentGrade} onChange={handleChange} placeholder="E.g. 7" error={errors.current_grade || errors.currentGrade} required />
-                    <InstitutionInput
-                      value={form.institution}
-                      onChange={(inst) => setForm((prev) => ({ ...prev, institution: inst }))}
-                      suggestions={institutionSuggestions}
-                      onSearch={async (q) => setInstitutionSuggestions(await searchInstitutions(q))}
-                      onEnsure={ensureInstitution}
-                      error={errors.institution}
-                    />
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <FormInput
+                        label="Current Grade / Class"
+                        name="currentGrade"
+                        value={form.currentGrade}
+                        onChange={handleChange}
+                        placeholder="E.g. 7"
+                        error={errors.current_grade || errors.currentGrade}
+                        required
+                      />
+                      <InstitutionInput
+                        value={form.institution}
+                        onChange={(inst) => setForm((prev) => ({ ...prev, institution: inst }))}
+                        suggestions={institutionSuggestions}
+                        onSearch={async (q) => setInstitutionSuggestions(await searchInstitutions(q))}
+                        onEnsure={ensureInstitution}
+                        error={errors.institution}
+                      />
+                    </div>
                   </>
                 )}
 
-                <FormInput label="Email" name="email" type="email" value={form.email} onChange={handleChange} error={errors.email} required />
+                <FormInput
+                  label="Email Address"
+                  name="email"
+                  type="email"
+                  placeholder="name@example.com"
+                  value={form.email}
+                  onChange={handleChange}
+                  error={errors.email}
+                  required
+                />
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <FormInput label="Password" name="password" type="password" value={form.password} onChange={handleChange} error={errors.password} required />
-                  <FormInput label="Confirm Password" name="password_confirmation" type="password" value={form.password_confirmation} onChange={handleChange} error={errors.password_confirmation} required />
+                  <FormInput
+                    label="Password"
+                    name="password"
+                    type="password"
+                    placeholder="••••••••"
+                    value={form.password}
+                    onChange={handleChange}
+                    error={errors.password}
+                    required
+                  />
+                  <FormInput
+                    label="Confirm Password"
+                    name="password_confirmation"
+                    type="password"
+                    placeholder="••••••••"
+                    value={form.password_confirmation}
+                    onChange={handleChange}
+                    error={errors.password_confirmation}
+                    required
+                  />
                 </div>
 
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="w-full mt-1 flex items-center justify-center gap-2 px-4 py-2.5 font-[family-name:var(--font-flap)] font-semibold tracking-[0.12em] uppercase text-[var(--board-steel-deep)] bg-[var(--flap-amber)] border-none disabled:opacity-60 cursor-pointer"
+                  className="w-full mt-3 py-3 px-4 font-semibold text-sm rounded-xl btn-gradient disabled:opacity-50 cursor-pointer flex items-center justify-center gap-2"
                 >
-                  {submitting ? <span className="spinner" aria-label="Loading" /> : 'Sign up'}
+                  {submitting ? <span className="spinner" aria-label="Loading" /> : `Complete Sign Up as ${isTeacher ? 'Teacher' : 'Student'}`}
                 </button>
               </form>
 
-              <p className="mt-5 text-center text-sm text-[var(--flap-mute)]">
+              <p className="mt-6 text-center text-xs text-[var(--flap-mute)]">
                 Already have an account?{' '}
-                <Link to="/login" className="font-semibold text-[var(--flap-amber)] hover:underline">Log in</Link>
+                <Link to="/login" className="font-semibold text-[var(--flap-accent)] hover:underline ml-1">
+                  Sign in
+                </Link>
               </p>
             </>
           ) : (
-            <div className="mt-2">
-              <header className="mb-5">
-                <p className="font-[family-name:var(--font-flap)] text-[1.4rem] font-semibold tracking-[0.04em] uppercase text-[var(--flap-ink)] mb-0.5">
-                  Verify your email
+            <div className="py-4">
+              <header className="mb-6 text-center">
+                <div className="w-12 h-12 rounded-2xl bg-[var(--flap-primary)]/15 border border-[var(--flap-accent)]/30 text-[var(--flap-accent)] flex items-center justify-center mx-auto mb-3 text-xl shadow-sm">
+                  ✉️
+                </div>
+                <h2 className="font-[family-name:var(--font-display)] text-2xl font-bold text-[var(--flap-ink)]">
+                  Verify your account
+                </h2>
+                <p className="text-xs text-[var(--flap-mute)] mt-1 max-w-sm mx-auto">
+                  During development, your one-time verification passkey is generated automatically below.
                 </p>
-                <p className="text-sm text-[var(--flap-mute)]">Email OTP is paused during development. Use the code below to continue.</p>
               </header>
 
-              <div className="mb-5 border border-[var(--board-rule)] bg-[var(--board-steel-deep)] px-4 py-4 text-center">
-                <p className="font-[family-name:var(--font-flap)] text-[11px] font-semibold uppercase tracking-[0.16em] text-[var(--flap-amber)]">Developing Period</p>
-                <p className="mt-2 font-[family-name:var(--font-flap)] text-3xl font-semibold tracking-[0.35em] text-[var(--flap-ink)] tabular-nums">
+              <div className="mb-6 p-6 rounded-2xl border border-[var(--board-rule-strong)] bg-[var(--board-steel-elevated)]/80 text-center shadow-sm">
+                <p className="text-[11px] font-bold uppercase tracking-wider text-[var(--flap-accent)] mb-2">Development Access Code</p>
+                <div className="font-[family-name:var(--font-display)] text-4xl font-extrabold tracking-[0.3em] text-[var(--flap-ink)] my-3 select-all">
                   {displayedOtp || '------'}
-                </p>
-                <p className="mt-2 text-xs text-[var(--flap-mute)]">This code is shown only while email delivery is off.</p>
+                </div>
+                <p className="text-[11px] text-[var(--flap-mute)]">One-click auto-filled for instant verification</p>
               </div>
 
               {otpError && (
-                <p className="text-[var(--flap-cancel)] text-sm text-center mb-2">{otpError}</p>
+                <div className="mb-4 p-3 rounded-xl border border-red-500/40 bg-red-500/10 text-red-500 text-xs text-center">
+                  {otpError}
+                </div>
               )}
 
               <button
                 type="button"
                 onClick={handleVerifyOtp}
                 disabled={otpSubmitting || !displayedOtp}
-                className="w-full mt-1 flex items-center justify-center gap-2 px-4 py-2.5 font-[family-name:var(--font-flap)] font-semibold tracking-[0.12em] uppercase text-[var(--board-steel-deep)] bg-[var(--flap-amber)] border-none disabled:opacity-60 cursor-pointer"
+                className="w-full py-3.5 px-4 font-semibold text-sm rounded-xl btn-gradient disabled:opacity-50 cursor-pointer flex items-center justify-center gap-2"
               >
-                {otpSubmitting ? <span className="spinner" aria-label="Loading" /> : 'Continue'}
+                {otpSubmitting ? <span className="spinner" aria-label="Loading" /> : 'Verify & Launch Dashboard →'}
               </button>
             </div>
           )}

@@ -1,13 +1,13 @@
 import PropTypes from 'prop-types'
 
 const ROLES = [
-  { value: 'teacher', label: 'Teacher' },
-  { value: 'student', label: 'Student' },
+  { value: 'teacher', label: 'Teacher', icon: '👨‍🏫' },
+  { value: 'student', label: 'Student', icon: '🎓' },
 ]
 
 function RoleToggle({ value, onChange }) {
   return (
-    <div className="inline-flex p-0.5 bg-[var(--flap-face)] border border-[var(--board-rule)]">
+    <div className="inline-flex p-1 bg-[var(--board-steel)] backdrop-blur-md rounded-xl border border-[var(--board-rule)] shadow-inner w-full max-w-xs">
       {ROLES.map((role) => {
         const isActive = role.value === value
         return (
@@ -16,13 +16,14 @@ function RoleToggle({ value, onChange }) {
             type="button"
             onClick={() => onChange(role.value)}
             className={[
-              'px-4 py-1.5 font-[family-name:var(--font-flap)] text-xs font-semibold uppercase tracking-[0.14em] transition-colors duration-150 cursor-pointer border-none',
+              'flex-1 flex items-center justify-center gap-2 py-2 px-3 text-xs md:text-sm font-semibold rounded-lg transition-all duration-200 cursor-pointer border-none',
               isActive
-                ? 'bg-[var(--flap-amber)] text-[var(--board-steel-deep)]'
-                : 'bg-transparent text-[var(--flap-mute)] hover:text-[var(--flap-ink)]',
+                ? 'btn-gradient font-bold shadow-[0_2px_14px_var(--flap-glow)]'
+                : 'bg-transparent text-[var(--flap-mute)] hover:text-[var(--flap-ink)] hover:bg-[var(--board-rule)]/20',
             ].join(' ')}
           >
-            {role.label}
+            <span>{role.icon}</span>
+            <span>{role.label}</span>
           </button>
         )
       })}

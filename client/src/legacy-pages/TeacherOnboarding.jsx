@@ -100,33 +100,39 @@ function TeacherOnboarding() {
     }
 
     return (
-        <div className="min-h-[100dvh] flex items-stretch justify-center bg-[var(--board-steel-deep)]">
-            <div className="w-full max-w-[960px] grid grid-cols-1 md:grid-cols-[0.9fr_1.1fr] bg-[var(--board-steel)] border border-[var(--board-rule)] animate-auth-fade md:self-center md:my-8">
+        <div className="min-h-[100dvh] flex items-center justify-center p-4 md:p-8 bg-[var(--board-steel-deep)] relative overflow-hidden">
+            {/* Ambient glows - Supaste Cobalt Aura */}
+            <div className="absolute top-1/4 left-1/4 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-blue-600/15 rounded-full blur-[150px] pointer-events-none" />
+            <div className="absolute bottom-1/4 right-1/4 translate-x-1/2 translate-y-1/2 w-[500px] h-[500px] bg-sky-500/15 rounded-full blur-[130px] pointer-events-none" />
 
-                <aside className="hidden md:flex flex-col justify-between p-10 bg-[var(--board-steel-deep)] text-[var(--flap-ink)] border-r border-[var(--board-rule)] relative" aria-hidden="true">
+            <div className="w-full max-w-[1080px] grid grid-cols-1 lg:grid-cols-[1fr_1.3fr] gap-8 items-stretch relative z-10 animate-auth-fade my-6">
+                <aside className="hidden lg:flex flex-col justify-between p-10 rounded-2xl border border-[var(--board-rule)] bg-[var(--board-steel-card)] backdrop-blur-2xl shadow-2xl relative overflow-hidden">
                     <div className="relative z-10">
-                        <p className="font-[family-name:var(--font-flap)] text-[1.3rem] font-semibold tracking-[0.04em] uppercase mb-3 leading-tight">
+                        <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[var(--flap-primary)]/15 border border-[var(--flap-accent)]/30 text-[var(--flap-accent)] text-xs font-semibold tracking-wide uppercase mb-6 shadow-sm">
+                            <span>🎙️</span>
+                            AI Voice Calibration
+                        </div>
+
+                        <h1 className="font-[family-name:var(--font-display)] text-3xl font-extrabold text-[var(--flap-ink)] leading-tight tracking-tight mb-4">
                             Build Your AI Teaching Identity
-                        </p>
-                        <p className="text-sm text-[var(--flap-mute)] leading-relaxed mb-6">
-                            This isn&apos;t just a form. You&apos;re training your personal AI to understand
-                            how <em>you</em> teach — so it can help your students the same way you would.
+                        </h1>
+
+                        <p className="text-[var(--flap-mute)] text-sm leading-relaxed mb-8">
+                            This isn&apos;t just a standard profile form. You are calibrating your personal AI model so it adopts your exact pedagogy, vocabulary, and explanation pace.
                         </p>
 
-                        <div className="space-y-3">
+                        <div className="space-y-4">
                             {[
-                                { mark: '01', text: 'Share your content preferences' },
-                                { mark: '02', text: 'Capture your natural teaching voice' },
-                                { mark: '03', text: 'AI detects your unique teaching style' },
+                                { mark: '01', title: 'Content & Subjects', text: 'Select curricula, grades, and subjects you specialize in.' },
+                                { mark: '02', title: 'Voice & Pedagogy Sample', text: 'Read a short 35s teaching prompt to capture your cadence.' },
+                                { mark: '03', title: 'Neural Model Tuning', text: 'AI assigns your detected teaching style and clones your voice.' },
                             ].map((item, i) => (
-                                <div key={i} className={['flex items-center gap-3 transition-opacity duration-300', step > i ? 'opacity-100' : 'opacity-50'].join(' ')}>
-                                    <span className="font-[family-name:var(--font-flap)] text-xs font-semibold tracking-[0.08em] text-[var(--flap-amber)] tabular-nums">{item.mark}</span>
-                                    <p className="text-sm text-[var(--flap-ink)] font-medium">{item.text}</p>
-                                    {step > i + 1 && (
-                                        <svg className="w-4 h-4 text-[var(--flap-amber)] ml-auto flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-                                            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                                        </svg>
-                                    )}
+                                <div key={i} className={['p-3.5 rounded-xl border transition-all duration-300', step > i ? 'bg-[var(--flap-primary)]/15 border-[var(--flap-accent)]/40 text-[var(--flap-ink)] shadow-sm' : 'bg-[var(--board-steel-elevated)]/60 border-[var(--board-rule)] opacity-60 text-[var(--flap-mute)]'].join(' ')}>
+                                    <div className="flex items-center gap-2 mb-1">
+                                        <span className="text-xs font-bold text-[var(--flap-accent)] tabular-nums">{item.mark}</span>
+                                        <p className="text-xs font-bold uppercase tracking-wider">{item.title}</p>
+                                    </div>
+                                    <p className="text-xs text-[var(--flap-mute)]">{item.text}</p>
                                 </div>
                             ))}
                         </div>
@@ -134,29 +140,32 @@ function TeacherOnboarding() {
 
                     <div className="relative z-10 pt-6 border-t border-[var(--board-rule)]">
                         <p className="text-xs text-[var(--flap-mute)]">
-                            LearnAI Teacher Onboarding · Secure & Private
+                            LearnAI Teacher Protocol · Privacy Preserved
                         </p>
                     </div>
                 </aside>
 
-                <div className="px-7 py-9 md:px-10 overflow-y-auto">
-                    <header className="mb-2 flex items-start justify-between">
+                <div className="p-8 md:p-10 rounded-2xl border border-[var(--board-rule)] bg-[var(--board-steel-card)] backdrop-blur-2xl shadow-2xl overflow-y-auto">
+                    <header className="mb-6 flex items-start justify-between">
                         <div>
-                            <p className="font-[family-name:var(--font-flap)] text-[1.05rem] font-semibold tracking-[0.04em] uppercase text-[var(--flap-ink)]">LearnAI</p>
-                            <p className="text-xs text-[var(--flap-mute)] mt-0.5">
-                                {startAtStep2 ? 'Re-record your teaching voice — step 2 of 2' : 'Teacher Onboarding — Just 2 quick steps'}
+                            <div className="flex items-center gap-2 mb-1">
+                                <div className="w-6 h-6 rounded-md bg-gradient-to-br from-[var(--btn-gradient-from)] to-[var(--btn-gradient-to)] flex items-center justify-center font-bold text-white text-xs shadow-sm">L</div>
+                                <span className="font-[family-name:var(--font-display)] font-bold text-base text-[var(--flap-ink)]">LearnAI Studio</span>
+                            </div>
+                            <p className="text-xs text-[var(--flap-mute)]">
+                                {startAtStep2 ? 'Recalibrate your voice sample' : 'Teacher Onboarding — Step ' + step + ' of 2'}
                             </p>
                         </div>
                         <button
                             type="button"
                             onClick={logout}
-                            className="font-[family-name:var(--font-flap)] text-xs uppercase tracking-wider text-[var(--flap-mute)] hover:text-[var(--flap-amber)] border-none bg-transparent cursor-pointer"
+                            className="text-xs text-[var(--flap-mute)] hover:text-[var(--flap-accent)] transition-colors border-none bg-transparent cursor-pointer font-medium"
                         >
-                            Log out
+                            Sign out
                         </button>
                     </header>
 
-                    <div className="mt-4 mb-5">
+                    <div className="mb-6">
                         <AvatarUploader
                             displayName={user?.name || 'Teacher'}
                             initialUrl={avatarUrl}
@@ -167,10 +176,12 @@ function TeacherOnboarding() {
                         />
                     </div>
 
-                    <ProgressBar current={step} />
+                    <div className="mb-6">
+                        <ProgressBar current={step} />
+                    </div>
 
                     {submitError && (
-                        <div className="mb-4 px-3 py-2.5 border border-[var(--flap-cancel)]/50 text-[var(--flap-cancel)] text-sm">
+                        <div className="mb-5 p-3 rounded-xl border border-red-500/40 bg-red-500/10 text-red-300 text-xs">
                             {submitError}
                         </div>
                     )}
@@ -194,7 +205,9 @@ function TeacherOnboarding() {
                         />
                     )}
                     {step === 2 && startAtStep2 && !profileLoaded && (
-                        <p className="text-sm text-[var(--flap-mute)] py-8 text-center">Loading your profile…</p>
+                        <div className="py-12 text-center text-slate-400 text-sm">
+                            <span className="spinner mr-2" /> Loading teacher profile...
+                        </div>
                     )}
                 </div>
             </div>

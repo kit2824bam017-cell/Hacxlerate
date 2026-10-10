@@ -1,12 +1,15 @@
 'use client'
 
-/** Split-flap board primitives — LearnAI Operate world. */
+import React from 'react'
+import ThemeSwitcher from '../ThemeSwitcher.jsx'
+
+/** Split-flap board primitives & multi-theme design system components — LearnAI */
 
 export function BoardShell({ children, className = '', viewport = false }) {
   return (
     <div
       className={[
-        'board-frame bg-[var(--board-steel)] text-[var(--flap-ink)]',
+        'board-frame bg-[var(--board-steel-deep)] text-[var(--flap-ink)] selection:bg-[var(--flap-primary)] selection:text-[var(--btn-text)]',
         viewport ? 'h-[100dvh] max-h-[100dvh] flex flex-col overflow-x-clip min-h-0' : 'min-h-[100dvh] flex flex-col',
         className,
       ].join(' ')}
@@ -20,44 +23,83 @@ export function BoardShell({ children, className = '', viewport = false }) {
 
 export function BoardHeader({ brand, sub, children, actions }) {
   return (
-    <header className="shrink-0 border-b border-[var(--board-rule)] bg-[var(--board-steel-deep)]">
-      <div className="max-w-[1600px] mx-auto px-4 md:px-6 h-14 flex items-center justify-between gap-3">
-        <div className="flex items-center gap-4 min-w-0">
-          <div className="leading-none min-w-0">
-            {typeof brand === 'string' || typeof brand === 'number' ? (
-              <p className="font-[family-name:var(--font-flap)] text-[15px] font-semibold tracking-[0.04em] uppercase text-[var(--flap-ink)] truncate">
-                {brand}
-              </p>
-            ) : (
-              brand
-            )}
-            {sub ? (
-              <p className="font-[family-name:var(--font-flap)] text-[9px] tracking-[0.18em] uppercase text-[var(--flap-mute)] mt-0.5">
-                {sub}
-              </p>
-            ) : null}
+    <header className="shrink-0 border-b border-[var(--board-rule)] bg-[var(--board-steel-deep)]/90 backdrop-blur-xl sticky top-0 z-30 transition-colors duration-300">
+      <div className="max-w-[1600px] mx-auto px-4 md:px-6 h-16 flex items-center justify-between gap-4">
+        <div className="flex items-center gap-5 min-w-0">
+          <div className="flex items-center gap-3 min-w-0">
+            <div
+              className="w-8 h-8 rounded-lg flex items-center justify-center font-bold text-sm shrink-0 transition-all duration-300"
+              style={{
+                background: 'linear-gradient(135deg, var(--btn-gradient-from), var(--btn-gradient-to))',
+                color: 'var(--btn-text)',
+                boxShadow: '0 0 16px var(--flap-glow)',
+              }}
+            >
+              L
+            </div>
+            <div className="leading-tight min-w-0">
+              {typeof brand === 'string' || typeof brand === 'number' ? (
+                <p className="font-[family-name:var(--font-display)] text-base font-bold tracking-tight text-[var(--flap-ink)] truncate flex items-center gap-1.5">
+                  {brand}
+                </p>
+              ) : (
+                brand
+              )}
+              {sub ? (
+                <p
+                  className="font-[family-name:var(--font-body)] text-[11px] font-medium tracking-wide uppercase truncate transition-colors duration-300"
+                  style={{ color: 'var(--flap-accent)' }}
+                >
+                  {sub}
+                </p>
+              ) : null}
+            </div>
           </div>
           {children}
         </div>
-        {actions ? <div className="flex items-center gap-2 shrink-0">{actions}</div> : null}
+        
+        {/* Right side actions with integrated theme switcher */}
+        <div className="flex items-center gap-2.5 shrink-0">
+          <ThemeSwitcher />
+          {actions}
+        </div>
       </div>
     </header>
   )
 }
 
-export function FlapTab({ active, onClick, children }) {
+export function FlapTab({ active, onClick, children, badge }) {
   return (
     <button
       type="button"
       onClick={onClick}
-      className={[
-        'font-[family-name:var(--font-flap)] px-3 py-1.5 text-[11px] md:text-xs font-semibold tracking-[0.12em] uppercase border transition-colors cursor-pointer',
+      style={
         active
-          ? 'flap-cell text-[var(--flap-ink)] border-[var(--flap-ink)]/25'
-          : 'bg-transparent text-[var(--flap-mute)] border-transparent hover:text-[var(--flap-ink)] hover:bg-[var(--flap-face)]/40',
+          ? {
+              background: 'linear-gradient(135deg, var(--btn-gradient-from), var(--btn-gradient-to))',
+              color: 'var(--btn-text)',
+              borderColor: 'var(--flap-accent)',
+              boxShadow: '0 0 18px var(--flap-glow)',
+            }
+          : {}
+      }
+      className={[
+        'font-[family-name:var(--font-display)] px-3.5 py-1.5 text-xs md:text-sm font-semibold tracking-wide rounded-lg transition-all duration-200 cursor-pointer flex items-center gap-2 border',
+        active
+          ? 'font-bold'
+          : 'bg-white/[0.03] text-[var(--flap-mute)] border-white/[0.06] hover:text-[var(--flap-ink)] hover:bg-white/[0.06] hover:border-white/[0.12]',
       ].join(' ')}
     >
-      {children}
+      <span>{children}</span>
+      {badge ? (
+        <span
+          className={`text-[10px] px-1.5 py-0.2 rounded-full ${
+            active ? 'bg-black/25 text-white font-extrabold' : 'bg-white/10 text-white/90'
+          }`}
+        >
+          {badge}
+        </span>
+      ) : null}
     </button>
   )
 }
@@ -73,22 +115,22 @@ export function FlapRow({
   lamp = false,
 }) {
   const base =
-    'w-full grid items-center gap-x-2 px-2 py-1.5 border-b border-[var(--board-rule)] text-left transition-colors'
+    'w-full grid items-center gap-x-3 px-3 py-2.5 rounded-lg border text-left transition-all duration-200'
   const tone = cancelled
-    ? 'text-[var(--flap-cancel)] opacity-80'
+    ? 'text-[var(--flap-cancel)] border-red-500/20 bg-red-500/5'
     : amber
-      ? 'text-[var(--flap-amber)]'
+      ? 'text-[var(--flap-accent)] border-[var(--board-rule)] bg-[var(--flap-primary)]/10'
       : selected
-        ? 'bg-[var(--flap-face)] text-[var(--flap-ink)] flap-cascade'
-        : 'text-[var(--flap-ink)] hover:bg-[var(--flap-face)]/50'
+        ? 'bg-[var(--flap-primary)]/15 text-[var(--flap-ink)] border-[var(--flap-accent)]/40 shadow-[0_0_16px_var(--flap-glow)]'
+        : 'text-[var(--flap-ink)] border-white/[0.06] bg-white/[0.02] hover:bg-white/[0.05] hover:border-white/[0.12]'
   return (
     <Tag
       type={Tag === 'button' ? 'button' : undefined}
       onClick={onClick}
-      className={[base, tone, onClick ? 'cursor-pointer border-none bg-transparent' : '', className].join(' ')}
+      className={[base, tone, onClick ? 'cursor-pointer' : '', className].join(' ')}
       style={{
         gridTemplateColumns: [
-          lamp || amber ? '10px' : null,
+          lamp || amber ? '12px' : null,
           ...cols.map((c) => c.width || '1fr'),
         ]
           .filter(Boolean)
@@ -97,7 +139,7 @@ export function FlapRow({
     >
       {(lamp || amber) && (
         <span
-          className={['flap-lamp', cancelled ? 'flap-lamp--cancel' : amber ? 'flap-lamp--amber' : selected ? 'flap-lamp--on' : ''].join(' ')}
+          className={['flap-lamp', cancelled ? 'flap-lamp--cancel' : amber ? 'flap-lamp--amber' : selected ? 'flap-lamp--amber' : ''].join(' ')}
           aria-hidden
         />
       )}
@@ -105,10 +147,10 @@ export function FlapRow({
         <span
           key={i}
           className={[
-            'flap-cell font-[family-name:var(--font-flap)] tracking-[0.06em] uppercase truncate px-2 py-1.5',
+            'tracking-normal truncate px-1 py-0.5',
             c.mute ? 'text-[var(--flap-mute)]' : '',
             c.className || '',
-            i === 0 ? 'text-[13px] md:text-sm font-semibold' : 'text-[11px] md:text-xs font-medium',
+            i === 0 ? 'text-xs md:text-sm font-semibold' : 'text-xs font-medium text-[var(--flap-mute)]',
           ].join(' ')}
         >
           {c.label}
@@ -122,8 +164,8 @@ export function FlapPanel({ children, className = '', scroll = false }) {
   return (
     <section
       className={[
-        'flap-panel border border-[var(--board-rule)]',
-        scroll ? 'flex flex-col min-h-0 overflow-hidden' : '',
+        'glass-card overflow-hidden',
+        scroll ? 'flex flex-col min-h-0' : '',
         className,
       ].join(' ')}
     >
@@ -132,14 +174,17 @@ export function FlapPanel({ children, className = '', scroll = false }) {
   )
 }
 
-export function FlapPanelHead({ title, meta }) {
+export function FlapPanelHead({ title, meta, icon }) {
   return (
-    <div className="shrink-0 flex items-baseline justify-between gap-3 px-3 py-2 border-b border-[var(--board-rule)] bg-[var(--board-steel-deep)]">
-      <h2 className="font-[family-name:var(--font-flap)] text-[11px] font-semibold tracking-[0.16em] uppercase text-[var(--flap-ink)] m-0">
-        {title}
-      </h2>
+    <div className="shrink-0 flex items-center justify-between gap-3 px-4 py-3 border-b border-[var(--board-rule)] bg-[var(--board-steel-elevated)]/60">
+      <div className="flex items-center gap-2 min-w-0">
+        {icon && <span className="text-[var(--flap-accent)] shrink-0">{icon}</span>}
+        <h2 className="font-[family-name:var(--font-display)] text-xs md:text-sm font-bold tracking-wider uppercase text-[var(--flap-ink)] m-0 truncate">
+          {title}
+        </h2>
+      </div>
       {meta ? (
-        <span className="font-[family-name:var(--font-flap)] text-[10px] tracking-[0.12em] uppercase text-[var(--flap-mute)]">
+        <span className="font-[family-name:var(--font-body)] text-xs font-semibold text-[var(--flap-accent)] px-2 py-0.5 rounded-full bg-[var(--flap-primary)]/10 border border-[var(--board-rule)]">
           {meta}
         </span>
       ) : null}
@@ -149,10 +194,10 @@ export function FlapPanelHead({ title, meta }) {
 
 export function FlapButton({ children, onClick, variant = 'primary', disabled, className = '', type = 'button' }) {
   const styles = {
-    primary: 'bg-[var(--flap-ink)] text-[var(--board-steel-deep)] hover:bg-white',
-    amber: 'bg-[var(--flap-amber)] text-[var(--board-steel-deep)] hover:brightness-110',
-    ghost: 'bg-transparent text-[var(--flap-ink)] border border-[var(--board-rule)] hover:bg-[var(--flap-face)]',
-    danger: 'bg-transparent text-[var(--flap-cancel)] border border-[var(--flap-cancel)]/40 hover:bg-[var(--flap-cancel)]/10',
+    primary: 'btn-gradient font-bold shadow-[0_4px_18px_var(--flap-glow)]',
+    amber: 'btn-gradient font-bold shadow-[0_4px_18px_var(--flap-glow)]',
+    ghost: 'bg-white/[0.04] text-[var(--flap-ink)] border border-[var(--board-rule)] hover:bg-white/[0.08] hover:border-[var(--board-rule-strong)]',
+    danger: 'bg-red-500/10 text-red-400 border border-red-500/30 hover:bg-red-500/20',
   }
   return (
     <button
@@ -160,7 +205,7 @@ export function FlapButton({ children, onClick, variant = 'primary', disabled, c
       disabled={disabled}
       onClick={onClick}
       className={[
-        'font-[family-name:var(--font-flap)] px-3 py-2 text-[11px] font-semibold tracking-[0.14em] uppercase border-none cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed transition-colors',
+        'font-[family-name:var(--font-body)] px-4 py-2 text-xs md:text-sm font-semibold rounded-xl border-none cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-200 flex items-center justify-center gap-2',
         styles[variant] || styles.primary,
         className,
       ].join(' ')}
@@ -175,7 +220,7 @@ export function FlapInput({ className = '', ...props }) {
     <input
       {...props}
       className={[
-        'w-full flap-cell text-[var(--flap-ink)] border border-[var(--board-rule)] px-3 py-2 text-sm outline-none focus:border-[var(--flap-amber)] placeholder:text-[var(--flap-mute)]',
+        'w-full rounded-xl bg-[var(--board-steel-elevated)]/80 text-[var(--flap-ink)] border border-[var(--board-rule)] px-3.5 py-2.5 text-sm outline-none transition-all duration-200 focus:border-[var(--flap-accent)] focus:ring-2 focus:ring-[var(--flap-glow)] placeholder:text-neutral-500',
         'font-[family-name:var(--font-body)]',
         className,
       ].join(' ')}
@@ -185,18 +230,26 @@ export function FlapInput({ className = '', ...props }) {
 
 export function IconBell({ className = 'w-4 h-4' }) {
   return (
-    <svg className={className} viewBox="0 0 24 24" fill="none" aria-hidden>
-      <path d="M6 9a6 6 0 1 1 12 0c0 3.5 1.5 5 2 6H4c.5-1 2-2.5 2-6Z" stroke="currentColor" strokeWidth="1.6" />
-      <path d="M10 18a2 2 0 0 0 4 0" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+    <svg className={className} viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M6 9a6 6 0 1 1 12 0c0 3.5 1.5 5 2 6H4c.5-1 2-2.5 2-6Z" stroke="currentColor" strokeWidth="1.8" />
+      <path d="M10 18a2 2 0 0 0 4 0" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
     </svg>
   )
 }
 
 export function IconLogout({ className = 'w-4 h-4' }) {
   return (
-    <svg className={className} viewBox="0 0 24 24" fill="none" aria-hidden>
-      <path d="M10 7V5a2 2 0 0 1 2-2h7v18h-7a2 2 0 0 1-2-2v-2" stroke="currentColor" strokeWidth="1.6" />
-      <path d="M4 12h10M10 8l4 4-4 4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+    <svg className={className} viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M10 7V5a2 2 0 0 1 2-2h7v18h-7a2 2 0 0 1-2-2v-2" stroke="currentColor" strokeWidth="1.8" />
+      <path d="M4 12h10M10 8l4 4-4 4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  )
+}
+
+export function IconSparkles({ className = 'w-4 h-4' }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3L12 3z" />
     </svg>
   )
 }

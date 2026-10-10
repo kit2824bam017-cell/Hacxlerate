@@ -1,9 +1,10 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import FormInput from '../components/FormInput.jsx'
 import RoleToggle from '../components/RoleToggle.jsx'
+import ThemeSwitcher from '../components/ThemeSwitcher.jsx'
 import { useAuth } from '../context/useAuth.js'
 import { resolveRoute } from '../context/AuthContextInner.jsx'
 
@@ -76,79 +77,178 @@ function Login() {
   }
 
   return (
-    <div className="min-h-[100dvh] flex items-stretch justify-center bg-[var(--board-steel-deep)]">
-      <div className="w-full max-w-[960px] grid grid-cols-1 md:grid-cols-[0.9fr_1.1fr] bg-[var(--board-steel)] border border-[var(--board-rule)] animate-auth-fade md:self-center md:my-8">
+    <div className="min-h-[100dvh] flex items-center justify-center p-4 md:p-8 bg-[var(--board-steel-deep)] relative overflow-hidden transition-colors duration-300">
+      {/* Floating Theme Switcher */}
+      <div className="absolute top-4 right-4 z-30">
+        <ThemeSwitcher />
+      </div>
 
-        <aside className="hidden md:flex flex-col justify-end p-10 bg-[var(--board-steel-deep)] text-[var(--flap-ink)] border-r border-[var(--board-rule)] relative" aria-hidden="true">
-          <div className="relative z-10 max-w-xs">
-            <p className="font-[family-name:var(--font-flap)] text-[1.6rem] font-semibold tracking-[0.04em] uppercase mb-2">
-              Smarter learning, anytime
+      {/* Background ambient radial gradients */}
+      <div className="absolute top-1/4 left-1/4 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-[var(--flap-primary)]/15 rounded-full blur-[150px] pointer-events-none" />
+      <div className="absolute bottom-1/4 right-1/4 translate-x-1/2 translate-y-1/2 w-[500px] h-[500px] bg-[var(--flap-accent)]/15 rounded-full blur-[130px] pointer-events-none" />
+
+      <div className="w-full max-w-[1080px] grid grid-cols-1 lg:grid-cols-[1.1fr_1fr] gap-8 items-center relative z-10 animate-auth-fade">
+        {/* Left hero side */}
+        <aside className="hidden lg:flex flex-col justify-between p-10 h-full rounded-2xl border border-[var(--board-rule)] bg-[var(--board-steel-card)] backdrop-blur-2xl shadow-2xl relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-48 h-48 bg-[var(--flap-primary)]/15 rounded-full blur-3xl pointer-events-none" />
+
+          <div>
+            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[var(--flap-primary)]/15 border border-[var(--flap-accent)]/30 text-[var(--flap-accent)] text-xs font-semibold tracking-wide uppercase mb-6 shadow-sm">
+              <span className="w-2 h-2 rounded-full bg-[var(--flap-accent)] animate-ping" />
+              LearnAI Architecture 2.0
+            </div>
+
+            <h1 className="font-[family-name:var(--font-display)] text-3xl md:text-4xl font-extrabold text-[var(--flap-ink)] leading-tight tracking-tight mb-4">
+              Your teacher, available after class.
+            </h1>
+
+            <p className="text-[var(--flap-mute)] text-sm md:text-base leading-relaxed mb-8">
+              A real teacher records once. LearnAI transforms that recording into an interactive Socratic AI tutor that teaches in <span className="text-[var(--flap-accent)] font-medium">their voice</span>, <span className="text-[var(--flap-accent)] font-medium">their explaining style</span>, and your exact syllabus.
             </p>
-            <p className="text-sm text-[var(--flap-mute)] leading-relaxed">
-              LearnAI helps students grasp concepts faster with guidance that matches how their teachers explain—while
-              making that teaching presence available around the clock, not only during the bell.
-            </p>
+
+            {/* Feature bullets */}
+            <div className="space-y-3 mb-8">
+              <div className="flex items-center gap-3 p-3.5 rounded-xl bg-[var(--board-steel-elevated)]/60 border border-[var(--board-rule)] hover:border-[var(--board-rule-strong)] transition-colors">
+                <div className="w-9 h-9 rounded-lg bg-[var(--flap-primary)]/20 text-[var(--flap-accent)] flex items-center justify-center font-bold text-base shrink-0 shadow-sm">
+                  🎙️
+                </div>
+                <div>
+                  <p className="text-xs font-bold text-[var(--flap-ink)] uppercase tracking-wider">Voice & Style Continuity</p>
+                  <p className="text-xs text-[var(--flap-mute)]">Trained on actual teacher explanations and speech cadence</p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-3 p-3.5 rounded-xl bg-[var(--board-steel-elevated)]/60 border border-[var(--board-rule)] hover:border-[var(--board-rule-strong)] transition-colors">
+                <div className="w-9 h-9 rounded-lg bg-emerald-500/20 text-emerald-500 flex items-center justify-center font-bold text-base shrink-0">
+                  📐
+                </div>
+                <div>
+                  <p className="text-xs font-bold text-[var(--flap-ink)] uppercase tracking-wider">Curriculum Bound</p>
+                  <p className="text-xs text-[var(--flap-mute)]">Strictly grounded in CBSE, Cambridge, IB & College Board</p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-3 p-3.5 rounded-xl bg-[var(--board-steel-elevated)]/60 border border-[var(--board-rule)] hover:border-[var(--board-rule-strong)] transition-colors">
+                <div className="w-9 h-9 rounded-lg bg-[var(--flap-primary)]/20 text-[var(--flap-accent)] flex items-center justify-center font-bold text-base shrink-0 shadow-sm">
+                  🧠
+                </div>
+                <div>
+                  <p className="text-xs font-bold text-[var(--flap-ink)] uppercase tracking-wider">Socratic Guidance</p>
+                  <p className="text-xs text-[var(--flap-mute)]">Step-by-step hints and reasoning instead of spoonfed answers</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Active Teacher Card Preview */}
+          <div className="p-4 rounded-xl bg-[var(--board-steel-elevated)]/80 border border-[var(--board-rule)] flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <img
+                src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=96&h=96&fit=crop&crop=faces"
+                alt="Teacher avatar"
+                className="w-10 h-10 rounded-full border-2 border-[var(--flap-accent)]/50 object-cover shadow-sm"
+              />
+              <div>
+                <p className="text-xs font-bold text-[var(--flap-ink)]">Mr. Ram Sharma</p>
+                <p className="text-[11px] text-[var(--flap-accent)]">Concept-first · 4.9 ★ (35 reviews)</p>
+              </div>
+            </div>
+            <span className="text-[11px] px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-500 border border-emerald-500/25 font-semibold">
+              Live Tutor
+            </span>
           </div>
         </aside>
 
-        <div className="px-7 py-9 md:px-10 overflow-y-auto">
-          <header className="mb-5">
-            <p className="font-[family-name:var(--font-flap)] text-[1.6rem] font-semibold tracking-[0.04em] uppercase text-[var(--flap-ink)] mb-0.5">
-              Welcome back to LearnAI
+        {/* Right login form side */}
+        <div className="p-8 md:p-10 rounded-2xl border border-[var(--board-rule)] bg-[var(--board-steel-card)] backdrop-blur-2xl shadow-2xl">
+          <header className="mb-6">
+            <div className="flex items-center gap-2.5 mb-2">
+              <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-[var(--btn-gradient-from)] to-[var(--btn-gradient-to)] flex items-center justify-center font-black text-white text-xs shadow-sm">
+                L
+              </div>
+              <span className="font-[family-name:var(--font-display)] font-bold text-lg text-[var(--flap-ink)]">LearnAI</span>
+            </div>
+            <h2 className="font-[family-name:var(--font-display)] text-2xl font-bold text-[var(--flap-ink)]">
+              Welcome back
+            </h2>
+            <p className="text-xs md:text-sm text-[var(--flap-mute)] mt-1">
+              Sign in to continue your learning journey or guide your students.
             </p>
-            <p className="text-sm text-[var(--flap-mute)]">Sign in to learn faster - or to extend your reach to every student, every hour.</p>
           </header>
 
-          <div className="mb-4">
+          <div className="mb-5">
             <RoleToggle value={role} onChange={setRole} />
           </div>
 
           {generalError && (
-            <div className="mb-4 px-3 py-2.5 border border-[var(--flap-cancel)]/50 text-[var(--flap-cancel)] text-sm">
-              {generalError}
+            <div className="mb-5 p-3 rounded-xl border border-red-500/40 bg-red-500/10 text-red-500 text-xs flex items-center gap-2">
+              <span>⚠️</span>
+              <span>{generalError}</span>
             </div>
           )}
 
-          <form className="grid gap-3.5" onSubmit={handleSubmit} noValidate>
-            <FormInput label="Email" name="email" type="email" value={form.email} onChange={handleChange} error={errors.email} />
-            <FormInput label="Password" name="password" type="password" value={form.password} onChange={handleChange} error={errors.password} />
+          <form className="space-y-4" onSubmit={handleSubmit} noValidate>
+            <FormInput
+              label="Email Address"
+              name="email"
+              type="email"
+              placeholder="name@example.com"
+              value={form.email}
+              onChange={handleChange}
+              error={errors.email}
+            />
+            <FormInput
+              label="Password"
+              name="password"
+              type="password"
+              placeholder="••••••••••••"
+              value={form.password}
+              onChange={handleChange}
+              error={errors.password}
+            />
 
             <button
               type="submit"
               disabled={submitting}
-              className="w-full mt-1 flex items-center justify-center gap-2 px-4 py-2.5 font-[family-name:var(--font-flap)] font-semibold tracking-[0.12em] uppercase text-[var(--board-steel-deep)] bg-[var(--flap-amber)] border-none disabled:opacity-60 cursor-pointer"
+              className="w-full mt-2 py-3 px-4 font-semibold text-sm rounded-xl btn-gradient disabled:opacity-50 cursor-pointer flex items-center justify-center gap-2"
             >
-              {submitting ? <span className="spinner" aria-label="Loading" /> : 'Log in'}
+              {submitting ? <span className="spinner" aria-label="Loading" /> : `Sign in as ${role === 'teacher' ? 'Teacher' : 'Student'}`}
             </button>
           </form>
 
-          <div className="mt-5 pt-5 border-t border-[var(--board-rule)]">
-            <p className="mb-3 text-center font-[family-name:var(--font-flap)] text-[0.7rem] font-semibold tracking-[0.16em] uppercase text-[var(--flap-mute)]">
-              Presentation demo
+          {/* Quick Demo Login shortcuts */}
+          <div className="mt-8 pt-6 border-t border-[var(--board-rule)]">
+            <p className="mb-3 text-center text-[11px] font-semibold tracking-wider uppercase text-[var(--flap-mute)]">
+              Instant 1-Click Demo Accounts
             </p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <button
                 type="button"
                 disabled={submitting}
                 onClick={() => handleDemoLogin('student')}
-                className="px-3 py-2.5 font-[family-name:var(--font-flap)] text-xs font-semibold tracking-[0.12em] uppercase text-[var(--flap-ink)] bg-[var(--flap-face)] border border-[var(--board-rule)] disabled:opacity-60 cursor-pointer hover:border-[var(--flap-amber)]"
+                className="p-3 rounded-xl text-xs font-semibold text-[var(--flap-ink)] bg-[var(--board-steel-elevated)]/60 border border-[var(--board-rule)] hover:border-[var(--board-rule-strong)] transition-all cursor-pointer flex flex-col items-center gap-1 group"
               >
-                Demo student
+                <span className="text-[var(--flap-accent)] group-hover:scale-110 transition-transform">🎓 Student Mode</span>
+                <span className="text-[10px] text-[var(--flap-mute)] font-normal">Rohan Samy (Class 7 CBSE)</span>
               </button>
+
               <button
                 type="button"
                 disabled={submitting}
                 onClick={() => handleDemoLogin('teacher')}
-                className="px-3 py-2.5 font-[family-name:var(--font-flap)] text-xs font-semibold tracking-[0.12em] uppercase text-[var(--flap-ink)] bg-[var(--flap-face)] border border-[var(--board-rule)] disabled:opacity-60 cursor-pointer hover:border-[var(--flap-amber)]"
+                className="p-3 rounded-xl text-xs font-semibold text-[var(--flap-ink)] bg-[var(--board-steel-elevated)]/60 border border-[var(--board-rule)] hover:border-[var(--board-rule-strong)] transition-all cursor-pointer flex flex-col items-center gap-1 group"
               >
-                Demo maths teacher
+                <span className="text-[var(--flap-accent)] group-hover:scale-110 transition-transform">👨‍🏫 Teacher Mode</span>
+                <span className="text-[10px] text-[var(--flap-mute)] font-normal">Mr. Ram Sharma (Maths/Science)</span>
               </button>
             </div>
           </div>
 
-          <p className="mt-5 text-center text-sm text-[var(--flap-mute)]">
+          <p className="mt-6 text-center text-xs text-[var(--flap-mute)]">
             Don&apos;t have an account?{' '}
-            <Link to="/signup" className="font-semibold text-[var(--flap-amber)] hover:underline">Sign up</Link>
+            <Link to="/signup" className="font-semibold text-[var(--flap-accent)] hover:underline ml-1">
+              Create an account
+            </Link>
           </p>
         </div>
       </div>
