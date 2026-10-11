@@ -692,3 +692,4 @@ export async function sendHomeworkHint({
   }
 }
 
+export default api

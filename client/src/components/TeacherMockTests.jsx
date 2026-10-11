@@ -9,8 +9,6 @@ import {
   fetchTeacherMockTests,
   fetchTeacherQuiz,
   publishTeacherQuiz,
-} from '../services/api.js'
-import api from '../services/api.js'
 import { FlapPanel, FlapPanelHead, FlapButton, FlapRow } from './ui/Board.jsx'
 
 export default function TeacherMockTests() {
