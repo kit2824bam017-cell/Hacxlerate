@@ -32,6 +32,7 @@ import FormattedAnswerText from '../components/FormattedAnswerText.jsx'
 import HomeworkPhotoUploader from '../components/HomeworkPhotoUploader.jsx'
 import LogoutReviewModal from '../components/LogoutReviewModal.jsx'
 import StudentQuizHub from '../components/StudentQuizHub.jsx'
+import StudentMockTestHub from '../components/StudentMockTestHub.jsx'
 import { sanitizeMathForSpeech } from '../utils/speechTextSanitize.js'
 import { filterCurriculumForTeacher, teacherSubjectList } from '../lib/teacherSubjects.js'
 import {
@@ -1259,6 +1260,7 @@ function StudentDashboard() {
             { id: 'home', label: 'Home' },
             { id: 'learn', label: 'Learn' },
             { id: 'quiz', label: 'Quiz' },
+            { id: 'mocktest', label: 'Mock Test' },
           ].map((m) => (
             <FlapTab key={m.id} active={learningMode === m.id} onClick={() => setLearningMode(m.id)}>
               {m.label}
@@ -1272,6 +1274,7 @@ function StudentDashboard() {
           { id: 'home', label: 'Home' },
           { id: 'learn', label: 'Learn' },
           { id: 'quiz', label: 'Quiz' },
+          { id: 'mocktest', label: 'Mock Test' },
         ].map((m) => (
           <FlapTab key={m.id} active={learningMode === m.id} onClick={() => setLearningMode(m.id)}>
             {m.label}
@@ -1364,42 +1367,42 @@ function StudentDashboard() {
             </div>
           ) : null}
 
-          {/* Two primary Gateway Cards */}
-          <div className="grid md:grid-cols-2 gap-6">
+          {/* Three primary Gateway Cards */}
+          <div className="grid md:grid-cols-3 gap-6">
             <button
               type="button"
               onClick={() => setLearningMode('learn')}
-              className="text-left p-8 rounded-3xl border border-[var(--board-rule)] bg-[var(--board-steel-card)] hover:bg-[var(--board-steel-elevated)] hover:border-[var(--board-rule-strong)] transition-all duration-300 group cursor-pointer backdrop-blur-xl shadow-lg flex flex-col justify-between relative overflow-hidden"
+              className="text-left p-7 rounded-3xl border border-[var(--board-rule)] bg-[var(--board-steel-card)] hover:bg-[var(--board-steel-elevated)] hover:border-[var(--board-rule-strong)] transition-all duration-300 group cursor-pointer backdrop-blur-xl shadow-lg flex flex-col justify-between relative overflow-hidden"
             >
-              <div className="absolute top-0 right-0 w-48 h-48 bg-[var(--flap-primary)]/10 rounded-full blur-2xl group-hover:bg-[var(--flap-accent)]/20 transition-colors" />
+              <div className="absolute top-0 right-0 w-40 h-40 bg-[var(--flap-primary)]/10 rounded-full blur-2xl group-hover:bg-[var(--flap-accent)]/20 transition-colors" />
 
               <div>
-                <div className="flex items-center justify-between mb-6">
-                  <div className="w-14 h-14 rounded-2xl bg-[var(--flap-primary)]/15 border border-[var(--flap-accent)]/30 text-[var(--flap-accent)] flex items-center justify-center text-3xl group-hover:scale-110 transition-transform shadow-sm">
+                <div className="flex items-center justify-between mb-5">
+                  <div className="w-13 h-13 rounded-2xl bg-[var(--flap-primary)]/15 border border-[var(--flap-accent)]/30 text-[var(--flap-accent)] flex items-center justify-center text-2xl group-hover:scale-110 transition-transform shadow-sm">
                     💬
                   </div>
-                  <span className="text-[11px] font-bold uppercase tracking-wider text-[var(--flap-accent)] px-3 py-1 rounded-full bg-[var(--flap-primary)]/15 border border-[var(--flap-accent)]/25">
-                    Interactive 1-on-1
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--flap-accent)] px-2.5 py-0.5 rounded-full bg-[var(--flap-primary)]/15 border border-[var(--flap-accent)]/25">
+                    1-on-1 Chat
                   </span>
                 </div>
 
-                <h2 className="font-[family-name:var(--font-display)] text-2xl font-bold text-[var(--flap-ink)] group-hover:text-[var(--flap-accent)] transition-colors mb-2">
+                <h2 className="font-[family-name:var(--font-display)] text-xl font-bold text-[var(--flap-ink)] group-hover:text-[var(--flap-accent)] transition-colors mb-2">
                   Learn through Chat
                 </h2>
 
-                <p className="text-[var(--flap-mute)] text-sm leading-relaxed mb-6">
-                  Ask homework doubts, get guiding Socratic hints, listen to neural voice explanations, and work step-by-step through any tricky concept.
+                <p className="text-[var(--flap-mute)] text-xs leading-relaxed mb-5">
+                  Ask homework doubts, get guiding Socratic hints, listen to neural voice explanations, and work step-by-step through tricky concepts.
                 </p>
 
-                <div className="flex flex-wrap gap-2 mb-6">
-                  <span className="text-[11px] px-2.5 py-1 rounded-lg bg-[var(--board-steel-elevated)] text-[var(--flap-mute)] border border-[var(--board-rule)]">🎙️ Voice Audio</span>
-                  <span className="text-[11px] px-2.5 py-1 rounded-lg bg-[var(--board-steel-elevated)] text-[var(--flap-mute)] border border-[var(--board-rule)]">📸 Photo OCR</span>
-                  <span className="text-[11px] px-2.5 py-1 rounded-lg bg-[var(--board-steel-elevated)] text-[var(--flap-mute)] border border-[var(--board-rule)]">🧠 Socratic Step-by-Step</span>
+                <div className="flex flex-wrap gap-1.5 mb-5">
+                  <span className="text-[10px] px-2 py-0.5 rounded-md bg-[var(--board-steel-elevated)] text-[var(--flap-mute)] border border-[var(--board-rule)]">🎙️ Voice</span>
+                  <span className="text-[10px] px-2 py-0.5 rounded-md bg-[var(--board-steel-elevated)] text-[var(--flap-mute)] border border-[var(--board-rule)]">📸 Photo</span>
+                  <span className="text-[10px] px-2 py-0.5 rounded-md bg-[var(--board-steel-elevated)] text-[var(--flap-mute)] border border-[var(--board-rule)]">🧠 Socratic</span>
                 </div>
               </div>
 
-              <div className="flex items-center text-[var(--flap-accent)] font-bold text-sm gap-2 mt-2">
-                <span>Choose a Teacher & Start</span>
+              <div className="flex items-center text-[var(--flap-accent)] font-bold text-xs gap-1.5 mt-2">
+                <span>Start Learning</span>
                 <span className="group-hover:translate-x-1 transition-transform">→</span>
               </div>
             </button>
@@ -1407,37 +1410,75 @@ function StudentDashboard() {
             <button
               type="button"
               onClick={() => setLearningMode('quiz')}
-              className="text-left p-8 rounded-3xl border border-[var(--board-rule)] bg-[var(--board-steel-card)] hover:bg-[var(--board-steel-elevated)] hover:border-[var(--board-rule-strong)] transition-all duration-300 group cursor-pointer backdrop-blur-xl shadow-lg flex flex-col justify-between relative overflow-hidden"
+              className="text-left p-7 rounded-3xl border border-[var(--board-rule)] bg-[var(--board-steel-card)] hover:bg-[var(--board-steel-elevated)] hover:border-[var(--board-rule-strong)] transition-all duration-300 group cursor-pointer backdrop-blur-xl shadow-lg flex flex-col justify-between relative overflow-hidden"
             >
-              <div className="absolute top-0 right-0 w-48 h-48 bg-[var(--flap-accent)]/10 rounded-full blur-2xl group-hover:bg-[var(--flap-primary)]/20 transition-colors" />
+              <div className="absolute top-0 right-0 w-40 h-40 bg-[var(--flap-accent)]/10 rounded-full blur-2xl group-hover:bg-[var(--flap-primary)]/20 transition-colors" />
 
               <div>
-                <div className="flex items-center justify-between mb-6">
-                  <div className="w-14 h-14 rounded-2xl bg-[var(--flap-primary)]/15 border border-[var(--flap-accent)]/30 text-[var(--flap-accent)] flex items-center justify-center text-3xl group-hover:scale-110 transition-transform shadow-sm">
+                <div className="flex items-center justify-between mb-5">
+                  <div className="w-13 h-13 rounded-2xl bg-[var(--flap-primary)]/15 border border-[var(--flap-accent)]/30 text-[var(--flap-accent)] flex items-center justify-center text-2xl group-hover:scale-110 transition-transform shadow-sm">
                     📝
                   </div>
-                  <span className="text-[11px] font-bold uppercase tracking-wider text-[var(--flap-accent)] px-3 py-1 rounded-full bg-[var(--flap-primary)]/15 border border-[var(--flap-accent)]/25">
-                    Mastery Diagnostics
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--flap-accent)] px-2.5 py-0.5 rounded-full bg-[var(--flap-primary)]/15 border border-[var(--flap-accent)]/25">
+                    Practice
                   </span>
                 </div>
 
-                <h2 className="font-[family-name:var(--font-display)] text-2xl font-bold text-[var(--flap-ink)] group-hover:text-[var(--flap-accent)] transition-colors mb-2">
+                <h2 className="font-[family-name:var(--font-display)] text-xl font-bold text-[var(--flap-ink)] group-hover:text-[var(--flap-accent)] transition-colors mb-2">
                   Curriculum Quizzes
                 </h2>
 
-                <p className="text-[var(--flap-mute)] text-sm leading-relaxed mb-6">
-                  Take chapter assessments matched to your grade. If you make a mistake, an integrated AI tutor immediately explains why and helps you fix it.
+                <p className="text-[var(--flap-mute)] text-xs leading-relaxed mb-5">
+                  Formative chapter quizzes. If you make a mistake, an integrated AI tutor immediately explains why and helps you fix misconceptions.
                 </p>
 
-                <div className="flex flex-wrap gap-2 mb-6">
-                  <span className="text-[11px] px-2.5 py-1 rounded-lg bg-[var(--board-steel-elevated)] text-[var(--flap-mute)] border border-[var(--board-rule)]">📊 Instant Diagnostics</span>
-                  <span className="text-[11px] px-2.5 py-1 rounded-lg bg-[var(--board-steel-elevated)] text-[var(--flap-mute)] border border-[var(--board-rule)]">💡 Misconception Hints</span>
-                  <span className="text-[11px] px-2.5 py-1 rounded-lg bg-[var(--board-steel-elevated)] text-[var(--flap-mute)] border border-[var(--board-rule)]">🎯 Next Recommendations</span>
+                <div className="flex flex-wrap gap-1.5 mb-5">
+                  <span className="text-[10px] px-2 py-0.5 rounded-md bg-[var(--board-steel-elevated)] text-[var(--flap-mute)] border border-[var(--board-rule)]">📊 Diagnostics</span>
+                  <span className="text-[10px] px-2 py-0.5 rounded-md bg-[var(--board-steel-elevated)] text-[var(--flap-mute)] border border-[var(--board-rule)]">💡 Hints</span>
+                  <span className="text-[10px] px-2 py-0.5 rounded-md bg-[var(--board-steel-elevated)] text-[var(--flap-mute)] border border-[var(--board-rule)]">🎯 Practice</span>
                 </div>
               </div>
 
-              <div className="flex items-center text-[var(--flap-accent)] font-bold text-sm gap-2 mt-2">
-                <span>View Assigned Quizzes</span>
+              <div className="flex items-center text-[var(--flap-accent)] font-bold text-xs gap-1.5 mt-2">
+                <span>Take a Quiz</span>
+                <span className="group-hover:translate-x-1 transition-transform">→</span>
+              </div>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setLearningMode('mocktest')}
+              className="text-left p-7 rounded-3xl border border-[var(--board-rule)] bg-[var(--board-steel-card)] hover:bg-[var(--board-steel-elevated)] hover:border-[var(--board-rule-strong)] transition-all duration-300 group cursor-pointer backdrop-blur-xl shadow-lg flex flex-col justify-between relative overflow-hidden"
+            >
+              <div className="absolute top-0 right-0 w-40 h-40 bg-emerald-500/10 rounded-full blur-2xl group-hover:bg-emerald-500/20 transition-colors" />
+
+              <div>
+                <div className="flex items-center justify-between mb-5">
+                  <div className="w-13 h-13 rounded-2xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-500 flex items-center justify-center text-2xl group-hover:scale-110 transition-transform shadow-sm">
+                    ⏱️
+                  </div>
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-500 px-2.5 py-0.5 rounded-full bg-emerald-500/15 border border-emerald-500/25">
+                    Timed Exam
+                  </span>
+                </div>
+
+                <h2 className="font-[family-name:var(--font-display)] text-xl font-bold text-[var(--flap-ink)] group-hover:text-emerald-500 transition-colors mb-2">
+                  Full Mock Tests
+                </h2>
+
+                <p className="text-[var(--flap-mute)] text-xs leading-relaxed mb-5">
+                  Simulated board examinations with real countdown timers, question navigator palette, marked-for-review tags, and detailed scorecards.
+                </p>
+
+                <div className="flex flex-wrap gap-1.5 mb-5">
+                  <span className="text-[10px] px-2 py-0.5 rounded-md bg-[var(--board-steel-elevated)] text-[var(--flap-mute)] border border-[var(--board-rule)]">⏳ Timed</span>
+                  <span className="text-[10px] px-2 py-0.5 rounded-md bg-[var(--board-steel-elevated)] text-[var(--flap-mute)] border border-[var(--board-rule)]">🧭 Palette</span>
+                  <span className="text-[10px] px-2 py-0.5 rounded-md bg-[var(--board-steel-elevated)] text-[var(--flap-mute)] border border-[var(--board-rule)]">🏆 Scorecards</span>
+                </div>
+              </div>
+
+              <div className="flex items-center text-emerald-500 font-bold text-xs gap-1.5 mt-2">
+                <span>Start Mock Test</span>
                 <span className="group-hover:translate-x-1 transition-transform">→</span>
               </div>
             </button>
@@ -1502,6 +1543,17 @@ function StudentDashboard() {
       {learningMode === 'quiz' && (
         <div className="max-w-[1600px] w-full mx-auto px-4 md:px-6 py-4 flex flex-col">
           <StudentQuizHub
+            onLearnTopic={() => {
+              dismissFollowUp()
+              setLearningMode('learn')
+            }}
+          />
+        </div>
+      )}
+
+      {learningMode === 'mocktest' && (
+        <div className="max-w-[1600px] w-full mx-auto px-4 md:px-6 py-4 flex flex-col flex-1 min-h-0">
+          <StudentMockTestHub
             onLearnTopic={() => {
               dismissFollowUp()
               setLearningMode('learn')

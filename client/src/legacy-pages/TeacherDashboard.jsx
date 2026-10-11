@@ -6,6 +6,7 @@ import TeacherAccountSettings from '../components/TeacherAccountSettings.jsx'
 import TeacherInsights from '../components/TeacherInsights.jsx'
 import TeacherTuneLab from '../components/TeacherTuneLab.jsx'
 import TeacherQuizzes from '../components/TeacherQuizzes.jsx'
+import TeacherMockTests from '../components/TeacherMockTests.jsx'
 import { getTeachingStyleDisplay } from '../constants/teachingStyleCopy.js'
 import { fetchTeacherProfile } from '../services/api.js'
 import {
@@ -20,7 +21,7 @@ import {
   IconLogout,
 } from '../components/ui/Board.jsx'
 
-const DASHBOARD_TABS = new Set(['overview', 'insights', 'quizzes', 'tune', 'profile'])
+const DASHBOARD_TABS = new Set(['overview', 'insights', 'quizzes', 'mocktests', 'tune', 'profile'])
 
 function isBrowserReloadNavigation() {
   if (typeof performance === 'undefined') return false
@@ -48,6 +49,7 @@ function TeacherDashboard() {
     { id: 'overview', label: 'Overview' },
     { id: 'insights', label: 'Insights' },
     { id: 'quizzes', label: 'Quizzes' },
+    { id: 'mocktests', label: 'Mock Tests' },
     { id: 'tune', label: 'Tune' },
     { id: 'profile', label: 'Profile' },
   ]
@@ -153,6 +155,7 @@ function TeacherDashboard() {
 
         {activeTab === 'insights' && <TeacherInsights />}
         {activeTab === 'quizzes' && <TeacherQuizzes />}
+        {activeTab === 'mocktests' && <TeacherMockTests />}
 
         {activeTab === 'tune' && (
           <>

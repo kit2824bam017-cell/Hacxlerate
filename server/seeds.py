@@ -278,6 +278,100 @@ def seed_database():
             db.add_all([q1, q2, q3])
             db.commit()
 
+        # Seed a published demo Mock Test
+        existing_mock = db.query(Quiz).filter_by(teacher_id=primary_teacher.id, title="CBSE Class 7 Comprehensive Science Mock Examination").first()
+        if not existing_mock and science_subj:
+            print("Seeding sample mock test...")
+            demo_mock = Quiz(
+                teacher_id=primary_teacher.id,
+                title="CBSE Class 7 Comprehensive Science Mock Examination",
+                board_id=cbse_board.id,
+                grade_id=cbse_grade.id,
+                grade_label="Class 7",
+                subject_id=science_subj.id,
+                subject_label="Science",
+                curriculum_unit_id=sample_science_unit.id if sample_science_unit else None,
+                lesson_title="Nutrition in Plants & Living Systems",
+                topic_title="Term 1 Full Curriculum Mock Paper",
+                difficulty="exam",
+                quiz_type="mock_test",
+                duration_minutes=20,
+                total_marks=100,
+                pass_percentage=50,
+                question_count=4,
+                status="published",
+                published_at=datetime.utcnow()
+            )
+            db.add(demo_mock)
+            db.commit()
+
+            mq1 = QuizQuestion(
+                quiz_id=demo_mock.id,
+                sort_order=1,
+                type="mcq",
+                prompt="A variegated leaf (partially green and partially white) is tested with iodine after photosynthesis. Which observation correctly explains the result?",
+                options=[
+                    "Only the green portion turns blue-black because chlorophyll is essential for starch formation",
+                    "The entire leaf turns blue-black because starch diffuses across all cells",
+                    "Only the white portion turns blue-black due to starch storage",
+                    "Neither portion changes color as iodine cannot penetrate intact leaf cells"
+                ],
+                correct_answer="Only the green portion turns blue-black because chlorophyll is essential for starch formation",
+                explanation="Photosynthesis only occurs in the green parts containing chlorophyll. Therefore, only the green parts produce starch that stains blue-black with iodine solution.",
+                topic_title="Photosynthesis Verification",
+                misconception_hint="Recall that chlorophyll is required to synthesize starch, and iodine specifically stains starch."
+            )
+            mq2 = QuizQuestion(
+                quiz_id=demo_mock.id,
+                sort_order=2,
+                type="mcq",
+                prompt="Insectivorous plants like the Pitcher plant (Nepenthes) grow in nitrogen-deficient soil. How do they primarily obtain necessary nitrogenous compounds?",
+                options=[
+                    "By trapping and digesting insects with specialized proteolytic digestive juices",
+                    "By absorbing nitrogen gas directly through open leaf stomata",
+                    "By living in a parasitic relationship with tree bark and draining sap",
+                    "By converting soil sulfur into organic nitrates"
+                ],
+                correct_answer="By trapping and digesting insects with specialized proteolytic digestive juices",
+                explanation="Insectivorous plants are green and carry out photosynthesis, but trap insects to digest protein and supplement nitrogen required for amino acids.",
+                topic_title="Heterotrophic Plant Nutrition",
+                misconception_hint="Remember that pitcher plants still photosynthesize, but digest insects specifically to satisfy nitrogen deficiency."
+            )
+            mq3 = QuizQuestion(
+                quiz_id=demo_mock.id,
+                sort_order=3,
+                type="mcq",
+                prompt="Which biological organism exhibits a symbiotic association where an alga and a fungus live together for mutual benefit?",
+                options=[
+                    "Lichen",
+                    "Cuscuta (Amarbel)",
+                    "Mushroom (Agaricus)",
+                    "Bread Mold (Rhizopus)"
+                ],
+                correct_answer="Lichen",
+                explanation="In Lichen, the alga provides food via photosynthesis while the fungus provides shelter, water, and minerals in a mutualistic symbiosis.",
+                topic_title="Symbiosis",
+                misconception_hint="Identify the organism that consists of dual partners: an autotroph (alga) and a saprotroph/heterotroph (fungus)."
+            )
+            mq4 = QuizQuestion(
+                quiz_id=demo_mock.id,
+                sort_order=4,
+                type="mcq",
+                prompt="During an experiment, two potted plants are kept in sunlight: Plant A with Vaseline applied on both leaf surfaces, and Plant B untreated. What is the expected outcome for Plant A?",
+                options=[
+                    "Plant A cannot exchange gases or transpire because stomatal pores are blocked by Vaseline",
+                    "Plant A grows twice as fast due to retained water moisture",
+                    "Plant A produces extra chlorophyll to compensate for lack of air",
+                    "Plant A converts carbon dioxide into glucose through its roots instead"
+                ],
+                correct_answer="Plant A cannot exchange gases or transpire because stomatal pores are blocked by Vaseline",
+                explanation="Vaseline coats and obstructs the microscopic stomatal apertures, preventing CO2 intake necessary for photosynthesis and blocking transpiration.",
+                topic_title="Stomatal Function",
+                misconception_hint="Vaseline forms an impermeable barrier over the stomata, halting gas exchange."
+            )
+            db.add_all([mq1, mq2, mq3, mq4])
+            db.commit()
+
     # Seed sample learning recommendation for student
     if student and primary_teacher:
         existing_rec = db.query(StudentLearningRec).filter_by(student_id=student.id).first()

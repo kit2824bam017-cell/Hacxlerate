@@ -327,6 +327,10 @@ class Quiz(Base):
     topic_id = Column(Integer, nullable=True)
     topic_title = Column(String(255), nullable=True)
     difficulty = Column(String(32), default="beginner", nullable=False)
+    quiz_type = Column(String(32), default="quiz", nullable=False) # "quiz" or "mock_test"
+    duration_minutes = Column(Integer, default=15, nullable=True)
+    total_marks = Column(Integer, default=100, nullable=True)
+    pass_percentage = Column(Integer, default=50, nullable=True)
     question_count = Column(Integer, default=5, nullable=False)
     status = Column(String(24), default="draft", nullable=False)
     published_at = Column(DateTime, nullable=True)
@@ -363,6 +367,10 @@ class Quiz(Base):
             "topic_id": self.topic_id,
             "topic_title": self.topic_title,
             "difficulty": self.difficulty,
+            "quiz_type": self.quiz_type or "quiz",
+            "duration_minutes": self.duration_minutes or 15,
+            "total_marks": self.total_marks or 100,
+            "pass_percentage": self.pass_percentage or 50,
             "question_count": self.question_count,
             "status": self.status,
             "published_at": self.published_at.isoformat() if self.published_at else None,
