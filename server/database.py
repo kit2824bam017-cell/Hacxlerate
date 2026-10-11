@@ -19,6 +19,25 @@ def init_db(app):
     from . import models
 
     Base.metadata.create_all(bind=engine)
+
+    # Safe migration for existing SQLite databases
+    try:
+        from sqlalchemy import text
+        with engine.connect() as conn:
+            res = conn.execute(text("PRAGMA table_info(quizzes)")).fetchall()
+            existing_cols = {row[1] for row in res}
+            if "quiz_type" not in existing_cols:
+                conn.execute(text("ALTER TABLE quizzes ADD COLUMN quiz_type VARCHAR(32) DEFAULT 'quiz'"))
+            if "duration_minutes" not in existing_cols:
+                conn.execute(text("ALTER TABLE quizzes ADD COLUMN duration_minutes INTEGER DEFAULT 15"))
+            if "total_marks" not in existing_cols:
+                conn.execute(text("ALTER TABLE quizzes ADD COLUMN total_marks INTEGER DEFAULT 100"))
+            if "pass_percentage" not in existing_cols:
+                conn.execute(text("ALTER TABLE quizzes ADD COLUMN pass_percentage INTEGER DEFAULT 50"))
+            conn.commit()
+    except Exception:
+        pass
+
     return db_session
 
 def get_db():

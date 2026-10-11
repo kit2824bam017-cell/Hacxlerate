@@ -396,9 +396,23 @@ export async function fetchTeacherCurriculum() {
   }
 }
 
-export async function fetchTeacherQuizzes() {
+export async function fetchTeacherQuizzes(type = 'quiz') {
   try {
-    const response = await api.get('/teacher/quizzes')
+    const url = type ? `/teacher/quizzes?type=${type}` : '/teacher/quizzes'
+    const response = await api.get(url)
+    return { data: response.data, error: null }
+  } catch (error) {
+    return { data: null, error: extractErrors(error) }
+  }
+}
+
+export async function fetchTeacherMockTests() {
+  return fetchTeacherQuizzes('mock_test')
+}
+
+export async function createTeacherQuiz(payload) {
+  try {
+    const response = await api.post('/teacher/quizzes', payload)
     return { data: response.data, error: null }
   } catch (error) {
     return { data: null, error: extractErrors(error) }
@@ -579,6 +593,42 @@ export async function sendQuizTutorMessage(attemptId, payload) {
 export async function completeQuizAttempt(attemptId) {
   try {
     const response = await api.post(`/student/quiz-attempts/${attemptId}/complete`)
+    return { data: response.data, error: null }
+  } catch (error) {
+    return { data: null, error: extractErrors(error) }
+  }
+}
+
+export async function fetchStudentMockTests() {
+  try {
+    const response = await api.get('/student/mock-tests')
+    return { data: response.data, error: null }
+  } catch (error) {
+    return { data: null, error: extractErrors(error) }
+  }
+}
+
+export async function startStudentMockTest(quizId) {
+  try {
+    const response = await api.post(`/student/mock-tests/${quizId}/start`)
+    return { data: response.data, error: null }
+  } catch (error) {
+    return { data: null, error: extractErrors(error) }
+  }
+}
+
+export async function submitStudentMockTest(quizId, payload) {
+  try {
+    const response = await api.post(`/student/mock-tests/${quizId}/submit`, payload, { timeout: 120000 })
+    return { data: response.data, error: null }
+  } catch (error) {
+    return { data: null, error: extractErrors(error) }
+  }
+}
+
+export async function retakeStudentMockTest(quizId) {
+  try {
+    const response = await api.post(`/student/mock-tests/${quizId}/retake`)
     return { data: response.data, error: null }
   } catch (error) {
     return { data: null, error: extractErrors(error) }
